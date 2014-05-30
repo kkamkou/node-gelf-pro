@@ -1,0 +1,32 @@
+{
+  "name": "gelf",
+  "version": "0.1.0",
+  "main": "./lib/gelf.js",
+  "author": "Kanstantsin Kamkou <kkamkou@gmail.com>",
+  "description": "The Graylog Extended Log Format for the Node.js",
+  "keywords": ["graylog", "gelf", "graylog2", "log"],
+  "repository" : {
+    "type" : "git",
+    "url" : "https://github.com/kkamkou/node-gelf.git"
+  },
+  "bugs" : {
+    "url" : "https://github.com/kkamkou/node-gelf/issues"
+  },
+  "licenses" : [
+    {
+      "type" : "MIT",
+      "url" : "https://github.com/kkamkou/node-gelf/raw/master/LICENSE"
+    }
+  ],
+  "scripts": {
+    "test": "node_modules/.bin/mocha"
+  },
+  "dependencies": {
+    "lodash": "2.4.*"
+  },
+  "devDependencies": {
+    "should": "4.0.*",
+    "mocha": "1.20.*",
+    "sinon": "1.10.*"
+  }
+}
