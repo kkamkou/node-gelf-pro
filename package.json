@@ -1,7 +1,7 @@
 {
-  "name": "gelf",
+  "name": "gelf-pro",
   "version": "0.1.0",
-  "main": "./lib/gelf.js",
+  "main": "./lib/gelf-pro.js",
   "author": "Kanstantsin Kamkou <kkamkou@gmail.com>",
   "description": "The Graylog Extended Log Format for the Node.js",
   "keywords": ["graylog", "gelf", "graylog2", "log"],
