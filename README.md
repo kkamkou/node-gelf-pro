@@ -17,6 +17,25 @@ var gelf = require('gelf-pro');
 
 ## API
 
+#### Configuration
+```javascript
+var log = require('gelf-pro');
+log.setConfig({
+  adapterName: 'udp', // currently supported "udp" only
+  adapterOptions: {
+    protocol: 'udp4', // udp adapter: udp4, udp6
+    host: '127.0.0.1',
+    port: 12201
+  }
+});
+```
+
+#### Basic functionality
+```javascript
+var extra = {tom: 'cat', jerry: 'mouse', others: {spike: 1, tyke: 1}};
+log.info("Hello world", extra, function (err, bytesSent) {});
+```
+
 ## License
 The MIT License (MIT)
 
