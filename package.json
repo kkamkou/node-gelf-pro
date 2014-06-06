@@ -22,7 +22,8 @@
     "test": "node_modules/.bin/mocha"
   },
   "dependencies": {
-    "lodash": "2.4.*"
+    "lodash": "2.4.*",
+    "async": "0.9.*"
   },
   "devDependencies": {
     "should": "4.0.*",

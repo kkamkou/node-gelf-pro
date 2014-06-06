@@ -27,20 +27,20 @@ module.exports = {
   },
 
  'Testing methods': function () {
-    gelf.info('world', {aa: 4, bb: 5}, function (err) {
-      console.log('Sent!');
+    gelf.info('worldaaaaaaaaaaaaaaaaaaaa sdasd', {aa: 4, bb: 5}, function (err) {
+      console.log(err);
     });
   },
 
-  'Long message split': function () {
+  /*'Long message split': function () {
     var message = getLongMessage();
 
     gelf.deflate(message, function (err, buffer) {
       gelf.getArrayFromBuffer(buffer).should.have.length(7);
     });
-  },
+  },*/
 
-  'Unique Id generation': function () {
+  /*'Unique Id generation': function () {
     var out = [], i, curr;
     for (i = 0; i <= 1000; i++) {
       curr = gelf.getUniqueId();
@@ -48,5 +48,5 @@ module.exports = {
       curr.should.have.length(8);
       out.push(curr);
     }
-  }
+  }*/
 }
