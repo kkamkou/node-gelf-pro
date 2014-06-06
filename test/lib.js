@@ -2,6 +2,7 @@
 var path = require('path'),
   gelf = require(path.join('..', 'lib', 'gelf-pro'));
 
+// helper functions
 var getLongMessage = function () {
   var i = 0, message = '';
   for (i = 0; i <= 10000; i++) {
@@ -19,14 +20,6 @@ module.exports = {
   },
 
  'Testing methods': function () {
-    gelf.info('worldaaaaaaaaaaaaaaaaaaaa sdasd', {aa: 4, bb: 5});
-  },
-
-  /*'Long message split': function () {
-    var message = getLongMessage();
-
-    gelf.deflate(message, function (err, buffer) {
-      gelf.getArrayFromBuffer(buffer).should.have.length(7);
-    });
-  },*/
+    // tbd...
+  }
 }
