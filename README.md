@@ -36,6 +36,9 @@ var extra = {tom: 'cat', jerry: 'mouse', others: {spike: 1, tyke: 1}};
 log.info("Hello world", extra, function (err, bytesSent) {});
 ```
 
+#### Levels
+```emergency```, ```alert```, ```critical```, ```error```, ```warning```, ```notice```, ```info```, ```debug']```
+
 ## License
 The MIT License (MIT)
 
