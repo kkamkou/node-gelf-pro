@@ -5,10 +5,10 @@ The Graylog Extended Log Format
 ## Installation
 ```
 "dependencies": {
-  "gelf": "0.1.0"
+  "gelf-pro": "0.1.0"
 }
 ```
-```npm update```
+```npm install gelf-pro```
 
 ## Initialization
 ```javascript

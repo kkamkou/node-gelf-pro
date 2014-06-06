@@ -7,15 +7,15 @@
   "keywords": ["graylog", "gelf", "graylog2", "log"],
   "repository" : {
     "type" : "git",
-    "url" : "https://github.com/kkamkou/node-gelf.git"
+    "url" : "https://github.com/kkamkou/node-gelf-pro.git"
   },
   "bugs" : {
-    "url" : "https://github.com/kkamkou/node-gelf/issues"
+    "url" : "https://github.com/kkamkou/node-gelf-pro/issues"
   },
   "licenses" : [
     {
       "type" : "MIT",
-      "url" : "https://github.com/kkamkou/node-gelf/raw/master/LICENSE"
+      "url" : "https://github.com/kkamkou/node-gelf-pro/raw/master/LICENSE"
     }
   ],
   "scripts": {
