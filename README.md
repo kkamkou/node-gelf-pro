@@ -39,6 +39,10 @@ log.info("Hello world", extra, function (err, bytesSent) {});
 #### Levels
 ```emergency```, ```alert```, ```critical```, ```error```, ```warning```, ```notice```, ```info```, ```debug```
 
+#### Adapters
+
+- UDP
+
 ## License
 The MIT License (MIT)
 
