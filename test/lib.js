@@ -1,11 +1,3 @@
-/**
- * Licensed under the MIT License
- *
- * @author   Kanstantsin A Kamkou (2ka.by), Alexander Günther
- * @license  http://www.opensource.org/licenses/mit-license.php The MIT License
- * @link     https://github.com/kkamkou/node-gelf-pro
- */
-
 // required stuff
 var path = require('path'),
   gelf = require(path.join('..', 'lib', 'gelf-pro'));
@@ -27,9 +19,7 @@ module.exports = {
   },
 
  'Testing methods': function () {
-    gelf.info('worldaaaaaaaaaaaaaaaaaaaa sdasd', {aa: 4, bb: 5}, function (err) {
-      console.log(err);
-    });
+    gelf.info('worldaaaaaaaaaaaaaaaaaaaa sdasd', {aa: 4, bb: 5});
   },
 
   /*'Long message split': function () {
@@ -39,14 +29,4 @@ module.exports = {
       gelf.getArrayFromBuffer(buffer).should.have.length(7);
     });
   },*/
-
-  /*'Unique Id generation': function () {
-    var out = [], i, curr;
-    for (i = 0; i <= 1000; i++) {
-      curr = gelf.getUniqueId();
-      out.should.not.containEql(curr);
-      curr.should.have.length(8);
-      out.push(curr);
-    }
-  }*/
 }
