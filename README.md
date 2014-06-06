@@ -15,9 +15,7 @@ The Graylog Extended Log Format
 var gelf = require('gelf-pro');
 ```
 
-## API
-
-#### Configuration
+### Configuration
 ```javascript
 var log = require('gelf-pro');
 log.setConfig({
@@ -30,16 +28,16 @@ log.setConfig({
 });
 ```
 
-#### Basic functionality
+### Basic functionality
 ```javascript
 var extra = {tom: 'cat', jerry: 'mouse', others: {spike: 1, tyke: 1}};
 log.info("Hello world", extra, function (err, bytesSent) {});
 ```
 
-#### Levels
+### Levels
 ```emergency```, ```alert```, ```critical```, ```error```, ```warning```, ```notice```, ```info```, ```debug```
 
-#### Adapters
+### Adapters
 
 - UDP
 
