@@ -2,6 +2,8 @@ node-gelf
 ====================
 The Graylog Extended Log Format
 
+![Build Status](https://travis-ci.org/kkamkou/node-gelf-pro.svg?branch=master)
+
 ## Installation
 ```
 "dependencies": {
