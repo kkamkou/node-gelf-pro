@@ -21,6 +21,7 @@ var gelf = require('gelf-pro');
 ```javascript
 var log = require('gelf-pro');
 log.setConfig({
+  fields: {facility: "example", owner: "Tom (a cat)"},
   adapterName: 'udp', // currently supported "udp" only
   adapterOptions: {
     protocol: 'udp4', // udp adapter: udp4, udp6
@@ -33,7 +34,11 @@ log.setConfig({
 ### Basic functionality
 ```javascript
 var extra = {tom: 'cat', jerry: 'mouse', others: {spike: 1, tyke: 1}};
+
 log.info("Hello world", extra, function (err, bytesSent) {});
+log.info("Hello world", function (err, bytesSent) {});
+log.info("Hello world", extra);
+log.info("Hello world");
 ```
 
 ### Levels
