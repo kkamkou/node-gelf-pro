@@ -7,7 +7,7 @@ The Graylog Extended Log Format
 ## Installation
 ```
 "dependencies": {
-  "gelf-pro": "0.1.0"
+  "gelf-pro": "0.1.1"
 }
 ```
 ```npm install gelf-pro```
