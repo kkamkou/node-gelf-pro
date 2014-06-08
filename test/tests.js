@@ -5,14 +5,18 @@ var path = require('path'),
   gelfOriginal = require(path.join('..', 'lib', 'gelf-pro'));
 
 // helper functions
-var getLongMessage = function () {
+var getLongMessage = function (len) {
   var i = 0, message = '';
-  for (i = 0; i <= 10000; i++) {
+  for (i = 0; i <= (len || 10000); i++) {
     message += "Lorem Ipsum is simply dummy text of the printing and typesetting industry." +
         " Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an" +
         " unknown printer took a galley of type and scrambled it to make a type specimen book.";
   }
   return message;
+};
+
+var getAdapter = function (name) {
+  return require(path.join('..', 'lib', 'adapter', name));
 };
 
 // tests
@@ -21,7 +25,15 @@ module.exports = {
   beforeEach: function () {},
   afterEach: function () {},
 
-  'Basic functionality': {
+  'Core functionality': {
+    'Default adapter functionality': function () {
+      var gelf = _.cloneDeep(gelfOriginal),
+        adapter = gelf.getAdapter(); // udp is a default one
+
+      adapter.options.protocol.should.be.eql('udp4');
+      adapter.send.should.be.a.Function;
+    },
+
     'Predefined fields': function () {
       var gelf = _.cloneDeep(gelfOriginal),
         mock = sinon.mock(gelf);
@@ -36,7 +48,6 @@ module.exports = {
 
     'Field validation': function () {
       var gelf = _.cloneDeep(gelfOriginal),
-        mock = sinon.mock(gelf),
         args = {
           short_message: 'Short message',
           full_message: 'Full message',
@@ -56,6 +67,32 @@ module.exports = {
       var result = JSON.parse(gelf.getStringFromObject.lastCall.returnValue);
       result.should.have.properties(args);
       result.should.not.have.property('id');
+    }
+  },
+
+  'Adapter UDP': {
+    'Compression validation': function (done) {
+      var adapter = getAdapter('udp');
+      adapter.deflate('test', function (err, buf) {
+        (err === null).should.be.true;
+        buf.should.be.an.instanceof(Buffer);
+        done();
+      });
+    },
+
+    'Chunks split validation': function () {
+      var adapter = getAdapter('udp'),
+        msgOriginal = getLongMessage(100),
+        msgTmp = '',
+        message = new Buffer(msgOriginal),
+        result = adapter.getArrayFromBuffer(message, 100);
+
+      result.should.have.length(248);
+      result.forEach(function (chunk) {
+        msgTmp += (new Buffer(chunk)).toString();
+      });
+
+      msgOriginal.should.be.exactly(msgTmp);
     }
   }
 };
