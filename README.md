@@ -19,7 +19,6 @@ var log = require('gelf-pro');
 
 ### Configuration
 ```javascript
-var log = require('gelf-pro');
 log.setConfig({
   fields: {facility: "example", owner: "Tom (a cat)"},
   adapterName: 'udp', // currently supported "udp" only
