@@ -14,7 +14,7 @@ The Graylog Extended Log Format
 
 ## Initialization
 ```javascript
-var gelf = require('gelf-pro');
+var log = require('gelf-pro');
 ```
 
 ### Configuration
