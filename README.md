@@ -47,10 +47,16 @@ log.info("Hello world");
 
 - UDP
 
+### Docker
+`
+[sudo] docker build --no-cache -t node-gelf-pro .
+[sudo] docker run -ti --rm -v "${PWD}:/opt/app" -w "/opt/app" node-gelf-pro
+`
+
 ## License
 The MIT License (MIT)
 
-Copyright (c) 2013 Kanstantsin Kamkou
+Copyright (c) 2013-2015 Kanstantsin Kamkou
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of
 this software and associated documentation files (the "Software"), to deal in
