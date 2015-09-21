@@ -5,6 +5,7 @@ node_js:
   - "2.0"
   - "3.0"
   - "4.0"
+  - "4.1"
 notifications:
   slack:
     on_success: never

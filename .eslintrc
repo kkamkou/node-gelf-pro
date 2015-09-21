@@ -75,11 +75,3 @@ rules:
   strict:
     - 2
     - "global"
-
-# Global scoped method and vars
-globals:
-  chrome: true
-  angular: true
-  _: true
-  S: true
-  moment: true
