@@ -21,7 +21,7 @@ var log = require('gelf-pro');
 ```javascript
 log.setConfig({
   fields: {facility: "example", owner: "Tom (a cat)"},
-  adapterName: 'udp', // currently supported "udp" only
+  adapterName: 'udp', // currently supported "udp" and "tcp"
   adapterOptions: {
     protocol: 'udp4', // udp adapter: udp4, udp6
     host: '127.0.0.1',

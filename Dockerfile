@@ -6,7 +6,7 @@ COPY package.json ./
 
 RUN npm install
 
-ENV NODE_PATH /opt/node_modules:$NODE_PATH
+ENV PATH /opt/node_modules/mocha/bin:$PATH
 
 VOLUME ["/opt/app"]
 
