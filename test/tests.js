@@ -67,6 +67,32 @@ module.exports = {
       var result = JSON.parse(gelf.getStringFromObject.lastCall.returnValue);
       result.should.have.properties(args);
       result.should.not.have.property('id');
+    },
+
+    'Extra fileds normalization': function () {
+      var mock = sinon.mock(console);
+      mock.expects('warn').once().withArgs('the first value: the key format is not valid');
+
+      var gelf = _.cloneDeep(gelfOriginal),
+        result = gelf.getStringFromObject({
+          value0: 'value0',
+          'the first value': 'string',
+          level1: {
+            value1: 'value1',
+            level2: {
+              level3: {value3: 'value3'},
+              value2: 'value2'
+            }
+          }
+        });
+
+      mock.verify();
+
+      result = JSON.parse(result);
+      result.should.have.property('_value0').equal('value0');
+      result.should.have.property('_level1_value1').equal('value1');
+      result.should.have.property('_level1_level2_value2').equal('value2');
+      result.should.have.property('_level1_level2_level3_value3').equal('value3');
     }
   },
 
