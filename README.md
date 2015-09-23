@@ -23,7 +23,9 @@ log.setConfig({
   fields: {facility: "example", owner: "Tom (a cat)"},
   adapterName: 'udp', // currently supported "udp" and "tcp"
   adapterOptions: {
-    protocol: 'udp4', // udp adapter: udp4, udp6
+    protocol: 'udp4', // udp only. udp adapter: udp4, udp6
+    deflate: true, // tcp only, optional. Enables zlib compression. Defaults to false.
+    family: 4, // tcp only, optional. Version of IP stack. Defaults to 4.
     host: '127.0.0.1',
     port: 12201
   }
@@ -45,7 +47,8 @@ log.info("Hello world");
 
 ### Adapters
 
-- UDP
+- UDP (with deflation and chunking)
+- TCP (with optional deflation)
 
 ### Tests
 #### Cli
