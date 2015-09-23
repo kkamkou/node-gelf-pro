@@ -7,7 +7,7 @@ The Graylog Extended Log Format
 ## Installation
 ```
 "dependencies": {
-  "gelf-pro": "0.1.1"
+  "gelf-pro": "~0.2"
 }
 ```
 ```npm install gelf-pro```
@@ -21,9 +21,11 @@ var log = require('gelf-pro');
 ```javascript
 log.setConfig({
   fields: {facility: "example", owner: "Tom (a cat)"},
-  adapterName: 'udp', // currently supported "udp" only
+  adapterName: 'udp', // currently supported "udp" and "tcp"
   adapterOptions: {
-    protocol: 'udp4', // udp adapter: udp4, udp6
+    protocol: 'udp4', // udp only. udp adapter: udp4, udp6
+    deflate: true, // tcp only, optional. Enables zlib compression. Defaults to false.
+    family: 4, // tcp only, optional. Version of IP stack. Defaults to 4.
     host: '127.0.0.1',
     port: 12201
   }
@@ -45,12 +47,26 @@ log.info("Hello world");
 
 ### Adapters
 
-- UDP
+- UDP (with deflation and chunking)
+- TCP (with optional deflation)
+
+### Tests
+#### Cli
+```bash
+npm install
+npm test
+```
+
+#### Docker
+```bash
+[sudo] docker build --no-cache -t node-gelf-pro .
+[sudo] docker run -ti --rm -v "${PWD}:/opt/app" -w "/opt/app" node-gelf-pro
+```
 
 ## License
 The MIT License (MIT)
 
-Copyright (c) 2013 Kanstantsin Kamkou
+Copyright (c) 2013-2015 Kanstantsin Kamkou
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of
 this software and associated documentation files (the "Software"), to deal in
