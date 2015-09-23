@@ -1,6 +1,8 @@
-// required stuff
+'use strict';
+
 var path = require('path'),
   sinon = require('sinon'),
+  should = require('should'),
   _ = require('lodash'),
   gelfOriginal = require(path.join('..', 'lib', 'gelf-pro'));
 
@@ -8,9 +10,9 @@ var path = require('path'),
 var getLongMessage = function (len) {
   var i = 0, message = '';
   for (i = 0; i <= (len || 10000); i++) {
-    message += "Lorem Ipsum is simply dummy text of the printing and typesetting industry." +
-        " Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an" +
-        " unknown printer took a galley of type and scrambled it to make a type specimen book.";
+    message += 'Lorem Ipsum is simply dummy text of the printing and typesetting industry.' +
+        ' Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s, when an' +
+        ' unknown printer took a galley of type and scrambled it to make a type specimen book.';
   }
   return message;
 };
@@ -21,17 +23,13 @@ var getAdapter = function (name) {
 
 // tests
 module.exports = {
-  before: function () {},
-  beforeEach: function () {},
-  afterEach: function () {},
-
   'Core functionality': {
     'Default adapter functionality': function () {
       var gelf = _.cloneDeep(gelfOriginal),
         adapter = gelf.getAdapter(); // udp is a default one
 
       adapter.options.protocol.should.be.eql('udp4');
-      adapter.send.should.be.a.Function;
+      adapter.send.should.be.a.Function();
     },
 
     'Predefined fields': function () {
@@ -61,7 +59,7 @@ module.exports = {
 
       gelf.info('Test message', args);
 
-      gelf.getStringFromObject.calledOnce.should.be.true;
+      gelf.getStringFromObject.calledOnce.should.be.true();
 
       delete args.id;
       var result = JSON.parse(gelf.getStringFromObject.lastCall.returnValue);
@@ -71,7 +69,7 @@ module.exports = {
 
     'Extra fileds normalization': function () {
       var mock = sinon.mock(console);
-      mock.expects('warn').once().withArgs('the first value: the key format is not valid');
+      mock.expects('warn').once().withExactArgs('the first value: the key format is not valid');
 
       var gelf = _.cloneDeep(gelfOriginal),
         result = gelf.getStringFromObject({
@@ -100,7 +98,7 @@ module.exports = {
     'Compression validation': function (done) {
       var adapter = getAdapter('udp');
       adapter.deflate('test', function (err, buf) {
-        (err === null).should.be.true;
+        should.not.exist(err);
         buf.should.be.an.instanceof(Buffer);
         done();
       });
@@ -119,6 +117,34 @@ module.exports = {
       });
 
       msgOriginal.should.be.exactly(msgTmp);
+    },
+
+    'Chunks limitation validation': function (done) {
+      var gelf = _.cloneDeep(gelfOriginal),
+        adapter = gelf.getAdapter(),
+        message = getLongMessage(100);
+
+      sinon.stub(adapter, 'getArrayFromBuffer', function (msg, len) {
+        return new Array(adapter.specification.chunkMaxLength.udp4);
+      });
+
+      gelf.send(message, function (err, result) {
+        err.should.be.an.instanceof(Error);
+        should.not.exist(result);
+        done();
+      });
+    }
+  },
+
+  'Adapter TCP': {
+    'Connection error': function (done) {
+      var adapter = getAdapter('tcp');
+      adapter.setOptions({'host': 'unknown', port: 5555});
+      adapter.send('hello', function (err, result) {
+        err.should.be.an.instanceof(Error);
+        should.not.exist(result);
+        done();
+      });
     }
   }
 };
