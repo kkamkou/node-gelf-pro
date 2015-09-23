@@ -1,6 +1,6 @@
-node-gelf
+node-gelf pro
 ====================
-The Graylog Extended Log Format
+The Graylog Extended Log Format. Pro - because of code-quality.
 
 ![Build Status](https://travis-ci.org/kkamkou/node-gelf-pro.svg?branch=master)
 
