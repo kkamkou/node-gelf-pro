@@ -7,7 +7,7 @@ The Graylog Extended Log Format. Pro - because of code-quality.
 ## Installation
 ```
 "dependencies": {
-  "gelf-pro": "~0.2"
+  "gelf-pro": "~0.3"
 }
 ```
 ```npm install gelf-pro```
@@ -39,6 +39,9 @@ log.info("Hello world", extra, function (err, bytesSent) {});
 log.info("Hello world", function (err, bytesSent) {});
 log.info("Hello world", extra);
 log.info("Hello world");
+
+log.info('Oooops.', new Error('An error message'));
+log.info(new Error('An error message'));
 ```
 
 ### Levels

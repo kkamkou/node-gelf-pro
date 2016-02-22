@@ -1,6 +1,6 @@
 {
   "name": "gelf-pro",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "main": "./lib/gelf-pro.js",
   "author": "Kanstantsin Kamkou <kkamkou@gmail.com>",
   "description": "The Graylog Extended Log Format for the Node.js",
@@ -22,12 +22,12 @@
     "test": "mocha"
   },
   "dependencies": {
-    "lodash": "~3.10",
-    "async": "~1.4"
+    "lodash": "~4.5",
+    "async": "~1.5"
   },
   "devDependencies": {
-    "should": "~7.1",
-    "mocha": "~2.3",
-    "sinon": "~1.16"
+    "should": "~8.2",
+    "mocha": "~2.4",
+    "sinon": "~1.17"
   }
 }

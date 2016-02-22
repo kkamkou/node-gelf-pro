@@ -67,7 +67,7 @@ module.exports = {
       result.should.not.have.property('id');
     },
 
-    'Extra fileds normalization': function () {
+    'Normalize extra fields': function () {
       var mock = sinon.mock(console);
       mock.expects('warn').once().withExactArgs('the first value: the key format is not valid');
 
@@ -91,6 +91,21 @@ module.exports = {
       result.should.have.property('_level1_value1').equal('value1');
       result.should.have.property('_level1_level2_value2').equal('value2');
       result.should.have.property('_level1_level2_level3_value3').equal('value3');
+    },
+
+    'Transform an Error object': function () {
+      var gelf = _.cloneDeep(gelfOriginal),
+        err = new Error('Some error message');
+
+      sinon.spy(gelf, 'getStringFromObject');
+
+      gelf.info(err);
+      gelf.info('Example', err);
+
+      JSON.parse(gelf.getStringFromObject.firstCall.returnValue)
+        .should.containEql({short_message: err.message.toString()});
+      JSON.parse(gelf.getStringFromObject.lastCall.returnValue)
+        .should.have.properties(['_error_message', '_error_stack']);
     }
   },
 
