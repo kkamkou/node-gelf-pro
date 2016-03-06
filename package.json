@@ -19,7 +19,7 @@
     }
   ],
   "scripts": {
-    "test": "mocha"
+    "test": "istanbul cover ./node_modules/mocha/bin/_mocha --report lcovonly -- -R spec && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js && rm -rf ./coverage"
   },
   "dependencies": {
     "lodash": "~4.5",
@@ -28,6 +28,8 @@
   "devDependencies": {
     "should": "~8.2",
     "mocha": "~2.4",
+    "mocha-lcov-reporter": "~1.2.0",
+    "coveralls": "~2.11.8",
     "sinon": "~1.17"
   }
 }
