@@ -52,8 +52,8 @@ It is not possible to modify the data.
 ```javascript
 log.setConfig({
   filter: [
-    function (message, extra) { // rejects a "debug" message
-      return (extra.level < 5);
+    function (message) { // rejects a "debug" message
+      return (message.level < 5);
     }
   ]
 });
