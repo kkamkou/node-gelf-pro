@@ -181,14 +181,41 @@ module.exports = {
     'Chunks limitation validation': function (done) {
       var gelf = _.cloneDeep(gelfOriginal),
         adapter = gelf.getAdapter(),
-        message = getLongMessage(100);
+        message = getLongMessage(100),
+        sandbox = sinon.sandbox.create();
 
-      sinon.stub(adapter, 'getArrayFromBuffer', function (msg, len) {
+      sandbox.stub(adapter, 'getArrayFromBuffer', function (msg, len) {
         return new Array(adapter.specification.chunkMaxLength.udp4);
       });
 
       gelf.send(message, function (err, result) {
         err.should.be.an.instanceof(Error);
+        should.not.exist(result);
+        sandbox.restore();
+        done();
+      });
+    },
+
+    'Socket exception': function (done) {
+      var gelf = _.cloneDeep(gelfOriginal),
+        msgError = 'example',
+        dgramSocket = require('dgram').createSocket('udp4'),
+        mock = sinon.mock(dgramSocket).expects('close').once()
+
+      sinon.stub(dgramSocket, 'send', function (msg, offset, length, port, address, cb) {
+        msg.should.be.an.instanceof(Buffer);
+        offset.should.equal(0);
+        length.should.equal(24);
+        port.should.equal(12201);
+        address.should.equal('127.0.0.1');
+        cb(new Error(msgError));
+      });
+
+      sinon.stub(gelf.getAdapter(), '_createSocket').returns(dgramSocket);
+
+      gelf.send('test', function (err, result) {
+        mock.verify();
+        err.message.should.equal(msgError);
         should.not.exist(result);
         done();
       });
