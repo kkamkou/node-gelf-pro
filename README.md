@@ -47,7 +47,6 @@ log.info(new Error('An error message'));
 ##### Filtering
 Sometimes we have to discard a message which is not suitable for the current environment.
 It is not possible to modify the data.
-Internally it uses [every](https://github.com/caolan/async#every).
 ```javascript
 log.setConfig({
   filter: [
