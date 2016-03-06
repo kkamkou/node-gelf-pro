@@ -58,7 +58,6 @@ log.setConfig({
 ```
 
 ##### Broadcasting
-The difference between `filtering` and `broadcasting` is that the last one gets a cloned object.
 It is not possible to modify the data. `broadcasting` happens after `filtering`.
 
 ```javascript
