@@ -46,7 +46,7 @@ log.info(new Error('An error message'));
 
 ##### Filtering
 Sometimes we have to discard a message which is not suitable for the current environment.
-It is possible to modify the `message` string and the `extra` object here.
+It is not possible to modify the data.
 Internally it uses [every](https://github.com/caolan/async#every).
 ```javascript
 log.setConfig({
@@ -60,7 +60,7 @@ log.setConfig({
 
 ##### Broadcasting
 The difference between `filtering` and `broadcasting` is that the last one gets a cloned object.
-That is why it is not possible to modify the data. `broadcasting` happens after `filtering`.
+It is not possible to modify the data. `broadcasting` happens after `filtering`.
 
 ```javascript
 log.setConfig({
