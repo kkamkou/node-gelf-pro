@@ -20,13 +20,15 @@ var log = require('gelf-pro');
 ### Configuration
 ```javascript
 log.setConfig({
-  fields: {facility: "example", owner: "Tom (a cat)"}, // default fields for all messages
-  adapterName: 'udp', // currently supported "udp" and "tcp"
+  fields: {facility: "example", owner: "Tom (a cat)"}, // optional; default fields for all messages
+  filter: [], // optional; filters to discard a message
+  broadcast: [], // optional; listeners of a message
+  adapterName: 'udp', // optional; currently supported "udp" and "tcp"; default: udp
   adapterOptions: {
-    protocol: 'udp4', // udp only. udp adapter: udp4, udp6
-    family: 4, // tcp only, optional. Version of IP stack. Defaults to 4.
-    host: '127.0.0.1',
-    port: 12201
+    protocol: 'udp4', // udp only; optional; udp adapter: udp4, udp6; default: udp4
+    family: 4, // tcp only; optional; version of IP stack; default: 4
+    host: '127.0.0.1', // optional; default: udp4
+    port: 12201 // optional; default: 12201
   }
 });
 ```
