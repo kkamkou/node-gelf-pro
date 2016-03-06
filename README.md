@@ -64,7 +64,7 @@ It is not possible to modify the data. `broadcasting` happens after `filtering`.
 log.setConfig({
   broadcast: [
     function (message) { // broadcasting to console
-      console[message.level > 3 ? 'info' : 'log'](message.short_message, message);
+      console[message.level > 3 ? 'log' : 'error'](message.short_message, message);
     }
   ]
 });
