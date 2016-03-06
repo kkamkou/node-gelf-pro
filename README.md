@@ -3,6 +3,7 @@ node-gelf pro
 The Graylog Extended Log Format. Pro - because of code-quality.
 
 ![Build Status](https://travis-ci.org/kkamkou/node-gelf-pro.svg?branch=master)
+[![Coverage Status](https://coveralls.io/repos/github/kkamkou/node-gelf-pro/badge.svg?branch=master)](https://coveralls.io/github/kkamkou/node-gelf-pro?branch=master)
 
 ## Installation
 ```
