@@ -7,7 +7,7 @@ The Graylog Extended Log Format. Pro - because of code-quality.
 ## Installation
 ```
 "dependencies": {
-  "gelf-pro": "~0.4"
+  "gelf-pro": "~0.5"
 }
 ```
 ```npm install gelf-pro```
@@ -42,6 +42,34 @@ log.info("Hello world");
 
 log.info('Oooops.', new Error('An error message'));
 log.info(new Error('An error message'));
+```
+
+##### Filtering
+Sometimes we have to discard a message which is not suitable for the current environment.
+It is possible to modify the `message` string and the `extra` object here.
+Internally it uses [every](https://github.com/caolan/async#every).
+```javascript
+log.setConfig({
+  filter: [
+    function (message, extra) { // rejects a "debug" message
+      return (extra.level < 5);
+    }
+  ]
+});
+```
+
+##### Broadcasting
+The difference between `filtering` and `broadcasting` is that the last one gets a cloned object.
+That is why it is not possible to modify the data. `broadcasting` happens after `filtering`.
+
+```javascript
+log.setConfig({
+  broadcast: [
+    function (message) { // broadcasting to console
+      console[message.level > 3 ? 'info' : 'log'](message.short_message, message);
+    }
+  ]
+});
 ```
 
 ### Levels

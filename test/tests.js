@@ -23,7 +23,7 @@ var getAdapter = function (name) {
 
 module.exports = {
   'Core functionality': {
-    'Default adapter functionality': function () {
+    'Set default adapter': function () {
       var gelf = _.cloneDeep(gelfOriginal),
         adapter = gelf.getAdapter(); // udp is a default one
 
@@ -31,7 +31,7 @@ module.exports = {
       adapter.send.should.be.a.Function();
     },
 
-    'Predefined levels': function () {
+    'Expose pre-defined levels': function () {
       var levels = {
         emergency: 0, alert: 1, critical: 2, error: 3, warning: 4, warn: 4, notice: 5, info: 6,
         debug: 7, log: 7
@@ -46,7 +46,7 @@ module.exports = {
       });
     },
 
-    'Predefined fields': function () {
+    'Set pre-defined fields': function () {
       var gelf = _.cloneDeep(gelfOriginal),
         mock = sinon.mock(gelf);
 
@@ -58,7 +58,7 @@ module.exports = {
       mock.verify();
     },
 
-    'Field validation': function () {
+    'Validate fields': function () {
       var gelf = _.cloneDeep(gelfOriginal),
         args = {
           short_message: 'Short message',
@@ -120,6 +120,36 @@ module.exports = {
         .should.containEql({short_message: err.message.toString()});
       JSON.parse(gelf.getStringFromObject.lastCall.returnValue)
         .should.have.properties(['_error_message', '_error_stack']);
+    },
+
+    'Broadcast messages': function () {
+      var expected = [{short_message: 'test', level: 6, world: true}],
+        stub1 = sinon.stub(),
+        stub2 = sinon.stub(),
+        gelf = _.cloneDeep(gelfOriginal);
+
+      gelf.setConfig({broadcast: [stub1, stub2]});
+      gelf.info('test', {world: true});
+
+      stub1.lastCall.args.should.eql(expected);
+      stub2.lastCall.args.should.eql(expected);
+    },
+
+    'Filter messages': function (done) {
+      var gelf = _.cloneDeep(gelfOriginal),
+        stub = sinon.stub().returns(true),
+        spyFn = sinon.spy(function (msg) { return msg.level < 4; }),
+        spySend = sinon.spy(gelf, 'send');
+
+      gelf.setConfig({filter: [stub, spyFn]});
+      gelf.warn('test', function (err, bytes) {
+        should.not.exist(err);
+        bytes.should.be.equal(0);
+        stub.lastCall.args.should.eql([{short_message: 'test', level: 4}]);
+        spyFn.lastCall.returned(false).should.be.true();
+        spySend.neverCalledWith().should.be.true();;
+        done();
+      });
     }
   },
 

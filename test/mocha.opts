@@ -1,4 +1,5 @@
 --require should
 --reporter spec
 --ui exports
+--bail
 --check-leaks
