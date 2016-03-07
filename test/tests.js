@@ -107,6 +107,12 @@ module.exports = {
       result.should.have.property('_level1_level2_level3_value3').equal('value3');
     },
 
+    'Work with dates': function () {
+      var gelf = _.cloneDeep(gelfOriginal),
+        date = new Date();
+      JSON.parse(gelf.getStringFromObject({test: date}))._test.should.equal(date.toString());
+    },
+
     'Transform an Error object': function () {
       var gelf = _.cloneDeep(gelfOriginal),
         err = new Error('Some error message');
@@ -147,7 +153,7 @@ module.exports = {
         bytes.should.be.equal(0);
         stub.lastCall.args.should.eql([{short_message: 'test', level: 4}]);
         spyFn.lastCall.returned(false).should.be.true();
-        spySend.neverCalledWith().should.be.true();;
+        spySend.neverCalledWith().should.be.true();
         done();
       });
     }

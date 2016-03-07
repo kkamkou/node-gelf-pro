@@ -8,7 +8,7 @@ The Graylog Extended Log Format. Pro - because of code-quality.
 ## Installation
 ```
 "dependencies": {
-  "gelf-pro": "~0.5"
+  "gelf-pro": "~0.6"
 }
 ```
 ```npm install gelf-pro```
@@ -46,6 +46,18 @@ log.info("Hello world");
 log.info('Oooops.', new Error('An error message'));
 log.info(new Error('An error message'));
 ```
+
+##### Extra
+In case `extra` [is a plain object](https://lodash.com/docs#isPlainObject),
+the library converts it to a readable format. Other values [are converted to string](https://lodash.com/docs#toString).
+```javascript
+log.message(
+  'a new msg goes here',
+  {me: {fname: 'k', lname: 'k', bdate: new Date(2000, 01, 01)}}
+);
+// the extra becomes:
+// {_me_fname: 'k', _me_lname: 'k', _me_bdate: 'Tue Feb 01 2000 00:00:00 GMT+0100 (CET)'}
+``` 
 
 ##### Filtering
 Sometimes we have to discard a message which is not suitable for the current environment.
