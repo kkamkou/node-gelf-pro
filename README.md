@@ -52,7 +52,7 @@ log.info(new Error('An error message'));
 In case `extra` [is a plain object](https://lodash.com/docs#isPlainObject),
 the library converts it to a readable format. Other values [are converted to string](https://lodash.com/docs#toString).
 ```javascript
-log.message(
+log.info(
   'a new msg goes here',
   {me: {fname: 'k', lname: 'k', bdate: new Date(2000, 01, 01)}}
 );
