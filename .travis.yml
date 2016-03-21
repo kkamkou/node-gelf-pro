@@ -17,3 +17,8 @@ notifications:
     on_success: never
     on_failure: always
 sudo: false
+deploy:
+  provider: npm
+  api_key: $NPM_TOKEN
+  on:
+    - tags: true
