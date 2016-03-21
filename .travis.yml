@@ -20,5 +20,6 @@ sudo: false
 deploy:
   provider: npm
   api_key: $NPM_TOKEN
+  email: $NPM_EMAIL
   on:
     tags: true
