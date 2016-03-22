@@ -113,6 +113,15 @@ module.exports = {
       JSON.parse(gelf.getStringFromObject({test: date}))._test.should.equal(date.toString());
     },
 
+    'Work with numeric type': function () {
+      var gelf = _.cloneDeep(gelfOriginal),
+        fields = {aFloat: 1.1, anInteger: 0, aString: '0'},
+        json = JSON.parse(gelf.getStringFromObject(fields));
+      Number.isFinite(json._aFloat).should.equal(true);
+      Number.isFinite(json._anInteger).should.equal(true);
+      Number.isFinite(json._aString).should.equal(false);
+    },
+
     'Transform an Error object': function () {
       var gelf = _.cloneDeep(gelfOriginal),
         err = new Error('Some error message');
