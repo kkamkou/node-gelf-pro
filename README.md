@@ -52,6 +52,7 @@ log.info(new Error('An error message'));
 ##### Extra
 In case `extra` [is a plain object](https://lodash.com/docs#isPlainObject),
 the library converts it to a readable format. Other values [are converted to string](https://lodash.com/docs#toString).
+Acceptable format is: `^[\w.-]$`  
 ```javascript
 log.info(
   'a new msg goes here',

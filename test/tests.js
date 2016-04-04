@@ -94,7 +94,9 @@ module.exports = {
             level2: {
               level3: {value3: 'value3'},
               value2: 'value2'
-            }
+            },
+            'key.with.dot': 1,
+            'key-with-dash': 1
           }
         });
 
@@ -103,8 +105,11 @@ module.exports = {
       result = JSON.parse(result);
       result.should.have.property('_value0').equal('value0');
       result.should.have.property('_level1_value1').equal('value1');
+      result.should.have.property('_level1_key.with.dot').equal(1);
+      result.should.have.property('_level1_key-with-dash').equal(1);
       result.should.have.property('_level1_level2_value2').equal('value2');
       result.should.have.property('_level1_level2_level3_value3').equal('value3');
+
     },
 
     'Work with dates': function () {

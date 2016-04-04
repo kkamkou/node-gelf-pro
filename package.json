@@ -1,6 +1,6 @@
 {
   "name": "gelf-pro",
-  "version": "0.6.2",
+  "version": "0.6.3",
   "main": "./lib/gelf-pro.js",
   "author": "Kanstantsin Kamkou <kkamkou@gmail.com>",
   "description": "The Graylog Extended Log Format for the Node.js",
@@ -22,15 +22,15 @@
     "test": "./node_modules/.bin/istanbul cover ./node_modules/mocha/bin/_mocha --report lcovonly -- -R spec && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js && rm -rf ./coverage"
   },
   "dependencies": {
-    "lodash": "~4.5",
+    "lodash": "~4.7",
     "async": "~1.5"
   },
   "devDependencies": {
     "istanbul": "~0.4.2",
-    "should": "~8.2",
+    "should": "~8.3",
     "mocha": "~2.4",
     "mocha-lcov-reporter": "~1.2.0",
-    "coveralls": "~2.11.8",
+    "coveralls": "~2.11",
     "sinon": "~1.17"
   }
 }
