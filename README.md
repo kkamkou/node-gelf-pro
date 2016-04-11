@@ -69,7 +69,7 @@ It is not possible to modify the data.
 log.setConfig({
   filter: [
     function (message) { // rejects a "debug" message
-      return (message.level < 5);
+      return (message.level < 7);
     }
   ]
 });
