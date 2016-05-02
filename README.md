@@ -64,8 +64,8 @@ log.info(
 
 ##### Filtering
 Sometimes we have to discard a message which is not suitable for the current environment.
-It is not possible to modify the data.
 ```javascript
+// it is not possible to modify the data.
 log.setConfig({
   filter: [
     function (message) { // rejects a "debug" message
@@ -79,6 +79,7 @@ log.setConfig({
 It is not possible to modify the data. `broadcasting` happens after `filtering`.
 
 ```javascript
+// it is not possible to modify the data.
 log.setConfig({
   broadcast: [
     function (message) { // broadcasting to console
