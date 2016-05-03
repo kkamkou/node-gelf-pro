@@ -46,6 +46,18 @@ module.exports = {
       });
     },
 
+    'Manually set level': function () {
+      var gelf = _.cloneDeep(gelfOriginal),
+        mock = sinon.mock(gelf);
+
+      mock.expects('getStringFromObject').once()
+        .withArgs({example: 1, level: 16, short_message: 'Test message'});
+
+      gelf.setConfig({fields: {example: 1}}).message('Test message', 16);
+
+      mock.verify();
+    },
+
     'Set pre-defined fields': function () {
       var gelf = _.cloneDeep(gelfOriginal),
         mock = sinon.mock(gelf);
@@ -220,7 +232,7 @@ module.exports = {
       var gelf = _.cloneDeep(gelfOriginal),
         msgError = 'example',
         dgramSocket = require('dgram').createSocket('udp4'),
-        mock = sinon.mock(dgramSocket).expects('close').once()
+        mock = sinon.mock(dgramSocket).expects('close').once();
 
       sinon.stub(dgramSocket, 'send', function (msg, offset, length, port, address, cb) {
         msg.should.be.an.instanceof(Buffer);
@@ -245,7 +257,7 @@ module.exports = {
   'Adapter TCP': {
     'Connection error': function (done) {
       var adapter = getAdapter('tcp');
-      adapter.setOptions({'host': 'unknown', port: 5555});
+      adapter.setOptions({host: 'unknown', port: 5555});
       adapter.send('hello', function (err, result) {
         err.should.be.an.instanceof(Error);
         should.not.exist(result);
