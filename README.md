@@ -30,7 +30,7 @@ log.setConfig({
   adapterOptions: {
     protocol: 'udp4', // udp only; optional; udp adapter: udp4, udp6; default: udp4
     family: 4, // tcp only; optional; version of IP stack; default: 4
-    host: '127.0.0.1', // optional; default: udp4
+    host: '127.0.0.1', // optional; default: 127.0.0.1
     port: 12201 // optional; default: 12201
   }
 });
