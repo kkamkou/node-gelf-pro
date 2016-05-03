@@ -22,10 +22,15 @@ var log = require('gelf-pro');
 
 ### Configuration
 ```javascript
+// simple
+log.setConfig({host: 'my.glog-server.net'});
+
+// advanced
 log.setConfig({
   fields: {facility: "example", owner: "Tom (a cat)"}, // optional; default fields for all messages
   filter: [], // optional; filters to discard a message
   broadcast: [], // optional; listeners of a message
+  levels: {}, // optional; default: see the levels section below 
   adapterName: 'udp', // optional; currently supported "udp" and "tcp"; default: udp
   adapterOptions: {
     protocol: 'udp4', // udp only; optional; udp adapter: udp4, udp6; default: udp4
@@ -45,8 +50,8 @@ log.info("Hello world", function (err, bytesSent) {});
 log.info("Hello world", extra);
 log.info("Hello world");
 
-log.info('Oooops.', new Error('An error message'));
-log.info(new Error('An error message'));
+log.error('Oooops.', new Error('An error message'));
+log.error(new Error('An error message'));
 
 log.message(new Error('An error message'), 3);
 ```
@@ -111,6 +116,10 @@ npm test
 [sudo] docker build --no-cache -t node-gelf-pro .
 [sudo] docker run -ti --rm -v "${PWD}:/opt/app" -w "/opt/app" node-gelf-pro
 ```
+
+#### Contributors
+
+- [corbinu](https://github.com/corbinu)
 
 ## License
 The MIT License (MIT)
