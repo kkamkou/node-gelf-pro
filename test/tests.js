@@ -38,20 +38,24 @@ module.exports = {
       };
 
       var gelf = _.cloneDeep(gelfOriginal);
+      sinon.spy(gelf, 'getStringFromObject');
 
       _.forEach(levels, function (lvl, fnc) {
-        JSON.parse(gelf[fnc]('test')).level.should.equal(lvl);
+        gelf[fnc]('test');
+        JSON.parse(gelf.getStringFromObject.lastCall.returnValue).level.should.equal(lvl);
       });
     },
 
     'Manually set level': function () {
-      var gelf = _.cloneDeep(gelfOriginal);
+      var gelf = _.cloneDeep(gelfOriginal),
+        mock = sinon.mock(gelf);
 
-      var msg = JSON.parse(gelf.setConfig({fields: {example: 1}}).message('Test message', 6));
-      
-      msg.level.should.equal(6);
-      msg.short_message.should.equal('Test message');
-      msg._example.should.equal(1);
+      mock.expects('getStringFromObject').once()
+        .withArgs({example: 1, level: 16, short_message: 'Test message'});
+
+      gelf.setConfig({fields: {example: 1}}).message('Test message', 16);
+
+      mock.verify();
     },
 
     'Set pre-defined fields': function () {
