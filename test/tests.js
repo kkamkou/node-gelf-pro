@@ -38,12 +38,20 @@ module.exports = {
       };
 
       var gelf = _.cloneDeep(gelfOriginal);
-      sinon.spy(gelf, 'getStringFromObject');
 
       _.forEach(levels, function (lvl, fnc) {
-        gelf[fnc]('test');
-        JSON.parse(gelf.getStringFromObject.lastCall.returnValue).level.should.equal(lvl);
+        JSON.parse(gelf[fnc]('test')).level.should.equal(lvl);
       });
+    },
+
+    'Manually set level': function () {
+      var gelf = _.cloneDeep(gelfOriginal);
+
+      var msg = JSON.parse(gelf.setConfig({fields: {example: 1}}).message('Test message', 6));
+      
+      msg.level.should.equal(6);
+      msg.short_message.should.equal('Test message');
+      msg._example.should.equal(1);
     },
 
     'Set pre-defined fields': function () {
@@ -220,7 +228,7 @@ module.exports = {
       var gelf = _.cloneDeep(gelfOriginal),
         msgError = 'example',
         dgramSocket = require('dgram').createSocket('udp4'),
-        mock = sinon.mock(dgramSocket).expects('close').once()
+        mock = sinon.mock(dgramSocket).expects('close').once();
 
       sinon.stub(dgramSocket, 'send', function (msg, offset, length, port, address, cb) {
         msg.should.be.an.instanceof(Buffer);
@@ -245,7 +253,7 @@ module.exports = {
   'Adapter TCP': {
     'Connection error': function (done) {
       var adapter = getAdapter('tcp');
-      adapter.setOptions({'host': 'unknown', port: 5555});
+      adapter.setOptions({host: 'unknown', port: 5555});
       adapter.send('hello', function (err, result) {
         err.should.be.an.instanceof(Error);
         should.not.exist(result);
