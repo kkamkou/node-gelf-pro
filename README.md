@@ -47,6 +47,8 @@ log.info("Hello world");
 
 log.info('Oooops.', new Error('An error message'));
 log.info(new Error('An error message'));
+
+log.message(new Error('An error message'), 3);
 ```
 
 ##### Extra
