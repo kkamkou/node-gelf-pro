@@ -10,7 +10,7 @@ node-gelf - Graylog2 client library for Node.js. Pro - because of code-quality. 
 ## Installation
 ```
 "dependencies": {
-  "gelf-pro": "~0.6"
+  "gelf-pro": "~0.7"
 }
 ```
 ```npm install gelf-pro```
