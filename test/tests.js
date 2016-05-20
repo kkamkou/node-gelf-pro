@@ -154,6 +154,15 @@ module.exports = {
         .should.have.properties(['_error_message', '_error_stack']);
     },
 
+    'Notify in case of a bogus usage': function () {
+      var mock = sinon.mock(console),
+        gelf = _.cloneDeep(gelfOriginal);
+      mock.expects('warn').once().withExactArgs('Extra should be object-like or undefined');
+      sinon.spy(gelf, 'getStringFromObject');
+      gelf.info('Bogus call', 'example');
+      mock.verify();
+    },
+
     'Broadcast messages': function () {
       var expected = [{short_message: 'test', level: 6, world: true}],
         stub1 = sinon.stub(),
