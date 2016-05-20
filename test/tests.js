@@ -182,6 +182,21 @@ module.exports = {
         spySend.neverCalledWith().should.be.true();
         done();
       });
+    },
+
+    'Normalization of a long field': function () {
+      var gelf = _.cloneDeep(gelfOriginal),
+        msg = getLongMessage(140);
+
+      msg.should.have.length(34545); // we need 32766
+
+      sinon.spy(gelf, 'getStringFromObject');
+
+      gelf.info('Test', {longField: msg});
+
+      var field = JSON.parse(gelf.getStringFromObject.firstCall.returnValue)._longField;
+      field.should.have.length(32766);
+      field.should.endWith('...');
     }
   },
 
@@ -216,7 +231,7 @@ module.exports = {
         message = getLongMessage(100),
         sandbox = sinon.sandbox.create();
 
-      sandbox.stub(adapter, 'getArrayFromBuffer', function (msg, len) {
+      sandbox.stub(adapter, 'getArrayFromBuffer', function () {
         return new Array(adapter.specification.chunkMaxLength.udp4);
       });
 
