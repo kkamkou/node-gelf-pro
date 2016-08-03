@@ -22,7 +22,7 @@
   },
   "devDependencies": {
     "istanbul": "~0.4.3",
-    "should": "~9.0",
+    "should": "~10.0",
     "mocha": "~3.0.0-1",
     "mocha-lcov-reporter": "~1.2.0",
     "coveralls": "~2.11",
