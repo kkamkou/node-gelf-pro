@@ -53,7 +53,7 @@ log.info("Hello world");
 log.error('Oooops.', new Error('An error message'));
 log.error(new Error('An error message'));
 
-log.message(new Error('An error message'), 3);
+log.message(new Error('An error message'), 3); // same as previous
 ```
 
 ##### Extra
