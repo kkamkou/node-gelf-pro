@@ -83,7 +83,7 @@ log.setConfig({
 ```
 
 ##### Broadcasting
-It is not possible to modify the data. `broadcasting` happens after `filtering`.
+`broadcasting` happens after `filtering`.
 
 ```javascript
 // it is not possible to modify the data.
