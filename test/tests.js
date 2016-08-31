@@ -124,6 +124,26 @@ module.exports = {
 
     },
 
+    'Avoid an empty message': function (done) {
+      var gelf = _.cloneDeep(gelfOriginal);
+      sinon.spy(gelf, 'send');
+      gelf.message();
+      process.nextTick(function () {
+        gelf.send.calledOnce.should.be.false();
+        done();
+      });
+    },
+
+    'Avoid a message with null': function (done) {
+      var gelf = _.cloneDeep(gelfOriginal);
+      sinon.spy(gelf, 'send');
+      gelf.message();
+      process.nextTick(function () {
+        gelf.send.calledOnce.should.be.false();
+        done();
+      });
+    },
+
     'Work with dates': function () {
       var gelf = _.cloneDeep(gelfOriginal),
         date = new Date();
