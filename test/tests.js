@@ -137,8 +137,7 @@ module.exports = {
     'Avoid a message with null': function (done) {
       var gelf = _.cloneDeep(gelfOriginal);
       sinon.spy(gelf, 'send');
-      gelf.message();
-      process.nextTick(function () {
+      gelf.message(null, 2, function () {
         gelf.send.calledOnce.should.be.false();
         done();
       });
@@ -301,7 +300,7 @@ module.exports = {
   'Adapter TCP': {
     'Connection error': function (done) {
       var adapter = getAdapter('tcp');
-      adapter.setOptions({host: 'unknown', port: 5555});
+      adapter.setOptions({host: 'unknown', port: 5555, timeout: 1000});
       adapter.send('hello', function (err, result) {
         err.should.be.an.instanceof(Error);
         should.not.exist(result);

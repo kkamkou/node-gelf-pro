@@ -10,7 +10,7 @@ node-gelf - Graylog2 client library for Node.js. Pro - because of code-quality. 
 ## Installation
 ```
 "dependencies": {
-  "gelf-pro": "~0.8" // see the "releases" section
+  "gelf-pro": "~0.9" // see the "releases" section
 }
 ```
 ```npm install gelf-pro```
@@ -35,6 +35,7 @@ log.setConfig({
   adapterOptions: {
     protocol: 'udp4', // udp only; optional; udp adapter: udp4, udp6; default: udp4
     family: 4, // tcp only; optional; version of IP stack; default: 4
+    timeout: 1000, // tcp only; optional; default: 10000 (10 sec)
     host: '127.0.0.1', // optional; default: 127.0.0.1
     port: 12201 // optional; default: 12201
   }
