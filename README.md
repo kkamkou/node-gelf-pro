@@ -29,6 +29,7 @@ log.setConfig({host: 'my.glog-server.net'});
 log.setConfig({
   fields: {facility: "example", owner: "Tom (a cat)"}, // optional; default fields for all messages
   filter: [], // optional; filters to discard a message
+  transform: [], // optional; transformers for a message
   broadcast: [], // optional; listeners of a message
   levels: {}, // optional; default: see the levels section below
   adapterName: 'udp', // optional; currently supported "udp" and "tcp"; default: udp
@@ -71,9 +72,8 @@ log.info(
 ```
 
 ##### Filtering
-Sometimes we have to discard a message which is not suitable for the current environment.
+Sometimes we have to discard a message which is not suitable for the current environment. It is `NOT` possible to modify the data.
 ```javascript
-// it is not possible to modify the data.
 log.setConfig({
   filter: [
     function (message) { // rejects a "debug" message
@@ -83,11 +83,26 @@ log.setConfig({
 });
 ```
 
-##### Broadcasting
-`broadcasting` happens after `filtering`.
+##### Transforming
+`transforming` happens after `filtering`. It is possible to modify the data.
 
 ```javascript
-// it is not possible to modify the data.
+log.setConfig({
+  transform: [
+    function (message) { // unwind an error
+      if (_.isError(message.error)) {
+        message.error = {message: message.error.message, stack: message.error.stack};
+      }
+      return message;
+    }
+  ]
+});
+```
+
+##### Broadcasting
+`broadcasting` happens after `transforming`. It is `NOT` possible to modify the data.
+
+```javascript
 log.setConfig({
   broadcast: [
     function (message) { // broadcasting to console

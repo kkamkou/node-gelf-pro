@@ -182,6 +182,37 @@ module.exports = {
       mock.verify();
     },
 
+    'Transform messages': function () {
+      var gelf = _.cloneDeep(gelfOriginal),
+        err = new Error('E!'),
+        expected = {
+          short_message: 'expected',
+          level: 6,
+          _world: 'hello',
+          _error_message: err.message,
+          _error_stack: err.stack
+        },
+        transform1 = function (extra) {
+          return _.merge(
+            extra,
+            {short_message: expected.short_message, level: expected.level, world: expected._world}
+          );
+        },
+        transform2 = function (extra) {
+          if (_.isError(extra.error)) {
+            extra.error = {message: extra.error.message, stack: extra.error.stack};
+          }
+          return extra;
+        };
+
+      sinon.spy(gelf, 'getStringFromObject');
+
+      gelf.setConfig({transform: [transform1, transform2]});
+      gelf.notice('original', {world: false, error: err});
+
+      JSON.parse(gelf.getStringFromObject.lastCall.returnValue).should.containEql(expected);
+    },
+
     'Broadcast messages': function () {
       var expected = [{short_message: 'test', level: 6, world: true}],
         stub1 = sinon.stub(),
