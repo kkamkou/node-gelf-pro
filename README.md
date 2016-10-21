@@ -112,7 +112,7 @@ log.setConfig({
 });
 ```
 
-### Levels
+### Levels ([1](https://httpd.apache.org/docs/current/mod/core.html#loglevel), [2](https://logging.apache.org/log4j/2.0/log4j-api/apidocs/org/apache/logging/log4j/Level.html), [3](http://stackoverflow.com/questions/2031163/when-to-use-the-different-log-levels))
 `emergency`, `alert`, `critical`, `error`, `warning` (`warn`), `notice`, `info`, `debug` (`log`)
 
 ### Adapters
