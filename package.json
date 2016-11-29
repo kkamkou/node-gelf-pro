@@ -2,6 +2,7 @@
   "name": "gelf-pro",
   "version": "0.9.1",
   "main": "./lib/gelf-pro.js",
+  "types": "./lib/definition.d.ts",
   "author": "Kanstantsin Kamkou <kkamkou@gmail.com>",
   "description": "The Graylog Extended Log Format for the Node.js",
   "keywords": ["graylog", "gelf", "graylog2", "log", "udp", "tcp"],
