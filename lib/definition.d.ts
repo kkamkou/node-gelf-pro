@@ -18,80 +18,80 @@ declare module 'gelf-pro' {
    * Levels definition object.
    */
   export interface IAdapterOptions {
-    // Protocol version for UDP adapter.
-    protocol?: 'udp4' | 'udp6',
-    // IP stack family version for TCP adapter.
-    family?: 4 | 6,
+    // Protocol version for UDP adapter ('udp4' or 'udp6').
+    protocol?: string;
+    // IP stack family version for TCP adapter (4 or 6).
+    family?: number;
     // TCP adapter timeout value in msec.
-    timeout?: number,
+    timeout?: number;
     // Graylog server hostname.
-    host?: string,
+    host?: string;
     // Graylog server port number.
-    port?: 12201,
+    port?: number;
   }
   /**
    * Gelf-pro configuration object.
    */
   export interface IGelfProConfig {
     // Additional fields to add to all messages.
-    fields?: IAdditionalFields,
+    fields?: IAdditionalFields;
     // Filters to discard a message.
-    filter?: Function[],
+    filter?: Function[];
     // Transformers for a message.
-    transform?: Function[],
+    transform?: Function[];
     // Listeners of a message.
-    broadcast?: EventListener[],
+    broadcast?: EventListener[];
     // Custom levels name.
-    levels?: ILevelsList,
+    levels?: ILevelsList;
     // Gelf-pro adapter's name ('tcp' or 'udp').
-    adapterName?: 'udp' | 'tcp',
+    adapterName?: string;
     // Gelf-pro adapter options.
-    adapterOptions?: IAdapterOptions,
+    adapterOptions?: IAdapterOptions;
   }
 
   /**
    * Set gelf-pro configuration.
    */
-  export function setConfig(config: IGelfProConfig);
+  export function setConfig(config: IGelfProConfig): void;
 
   /**
    * Emit an emergency message.
    */
-  export function emergency(message: any, extra?: IAdditionalFields, callback?: Function);
+  export function emergency(message: any, extra?: IAdditionalFields, callback?: Function): void;
   /**
    * Emit an alert message.
    */
-  export function alert(message: any, extra?: IAdditionalFields, callback?: Function);
+  export function alert(message: any, extra?: IAdditionalFields, callback?: Function): void;
   /**
    * Emit a critical message.
    */
-  export function critical(message: any, extra?: IAdditionalFields, callback?: Function);
+  export function critical(message: any, extra?: IAdditionalFields, callback?: Function): void;
   /**
    * Emit an error message.
    */
-  export function error(message: any, extra?: IAdditionalFields, callback?: Function);
+  export function error(message: any, extra?: IAdditionalFields, callback?: Function): void;
   /**
    * Emit a warning message.
    */
-  export function warning(message: any, extra?: IAdditionalFields, callback?: Function);
+  export function warning(message: any, extra?: IAdditionalFields, callback?: Function): void;
   /**
    * Emit a warning message.
    */
-  export function warn(message: any, extra?: IAdditionalFields, callback?: Function);
+  export function warn(message: any, extra?: IAdditionalFields, callback?: Function): void;
   /**
    * Emit a notification message.
    */
-  export function notice(message: any, extra?: IAdditionalFields, callback?: Function);
+  export function notice(message: any, extra?: IAdditionalFields, callback?: Function): void;
   /**
    * Emit an informational message.
    */
-  export function info(message: any, extra?: IAdditionalFields, callback?: Function);
+  export function info(message: any, extra?: IAdditionalFields, callback?: Function): void;
   /**
    * Emit a debug message.
    */
-  export function debug(message: any, extra?: IAdditionalFields, callback?: Function);
+  export function debug(message: any, extra?: IAdditionalFields, callback?: Function): void;
   /**
    * Emit a debug message.
    */
-  export function log(message: any, extra?: IAdditionalFields, callback?: Function);
+  export function log(message: any, extra?: IAdditionalFields, callback?: Function): void;
 }
