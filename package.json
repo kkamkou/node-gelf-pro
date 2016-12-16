@@ -5,7 +5,7 @@
   "types": "./lib/definition.d.ts",
   "author": "Kanstantsin Kamkou <kkamkou@gmail.com>",
   "description": "The Graylog Extended Log Format for the Node.js",
-  "keywords": ["graylog", "gelf", "graylog2", "log", "udp", "tcp"],
+  "keywords": ["graylog", "gelf", "logging", "udp", "tcp"],
   "repository" : {
     "type" : "git",
     "url" : "https://github.com/kkamkou/node-gelf-pro.git"
@@ -24,7 +24,7 @@
   "devDependencies": {
     "istanbul": "~0.4.3",
     "should": "~11.1",
-    "mocha": "~3.1.0",
+    "mocha": "~3.2.0",
     "mocha-lcov-reporter": "~1.2.0",
     "coveralls": "~2.11",
     "sinon": "~1.17"
