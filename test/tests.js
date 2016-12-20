@@ -1,10 +1,13 @@
 'use strict';
 
+var PATH_LIB = ['..', 'lib'].join('/');
+
 var path = require('path'),
   sinon = require('sinon'),
+  events = require('events'),
   should = require('should'),
   _ = require('lodash'),
-  gelfOriginal = require(path.join('..', 'lib', 'gelf-pro'));
+  gelfOriginal = require(path.join(PATH_LIB, 'gelf-pro'));
 
 // helper functions
 var getLongMessage = function (len) {
@@ -18,7 +21,7 @@ var getLongMessage = function (len) {
 };
 
 var getAdapter = function (name) {
-  return require(path.join('..', 'lib', 'adapter', name));
+  return Object.create(require(path.join('..', 'lib', 'adapter', name)));
 };
 
 module.exports = {
@@ -259,6 +262,15 @@ module.exports = {
     }
   },
 
+  'Adapter': {
+    'abstract functionality': function () {
+      var abstract = Object.create(require(path.join(path.join(PATH_LIB, 'adapter', 'abstract'))));
+      Object.keys(abstract).should.have.length(0);
+      abstract.options.should.eql({});
+      (function () { abstract.send('msg', _.noop); }).should.throw('Redefine me please');
+    }
+  },
+
   'Adapter UDP': {
     'Compression validation': function (done) {
       var adapter = getAdapter('udp');
@@ -329,7 +341,18 @@ module.exports = {
   },
 
   'Adapter TCP': {
-    'Connection error': function (done) {
+    beforeEach: function() {
+      this.adapter = getAdapter('tcp');
+
+      this.eventEmitter = new events.EventEmitter();
+      this.eventEmitter.destroy = sinon.stub();
+      this.eventEmitter.end = sinon.stub();
+      this.eventEmitter.setTimeout = sinon.stub();
+
+      sinon.stub(this.adapter, '_instance').returns(this.eventEmitter);
+    },
+
+    'Abstract functionality': function (done) {
       var adapter = getAdapter('tcp');
       adapter.setOptions({host: 'unknown', port: 5555, timeout: 1000});
       adapter.send('hello', function (err, result) {
@@ -337,6 +360,52 @@ module.exports = {
         should.not.exist(result);
         done();
       });
+    },
+
+    'Valid message': function (done) {
+      var self = this,
+        options = {timeout: 123};
+
+      this.eventEmitter.end.withArgs(new Buffer([0x68, 0x65, 0x6c, 0x6c, 0x6f, 0x00])).callsArg(1);
+
+      this.adapter.setOptions(options);
+      this.adapter.send('hello', function (err, result) {
+        should.not.exists(err);
+        result.should.equal(6);
+        self.eventEmitter.setTimeout
+          .withArgs(options.timeout, sinon.match.func).calledOnce.should.be.true();
+        done();
+      });
+
+      this.eventEmitter.emit('connect');
+    },
+
+    'Connection timeout': function (done) {
+      this.eventEmitter.setTimeout.yieldsAsync();
+
+      var self = this;
+      this.adapter.setOptions({timeout: 1000});
+      this.adapter.send('hello', function (err, results) {
+        should.not.exists(results);
+        self.eventEmitter.end.calledWithExactly().should.be.true();
+        self.eventEmitter.destroy.calledOnce.should.be.true();
+        err.should.be.instanceOf(Error).and.containEql({message: 'Timeout (1000 ms)'});
+        done();
+      });
+    },
+
+    'Connection error': function (done) {
+      var self = this;
+      this.adapter.setOptions({timeout: 1000});
+      this.adapter.send('hello', function (err, results) {
+        should.not.exists(results);
+        self.eventEmitter.end.calledWithExactly().should.be.true();
+        self.eventEmitter.destroy.calledOnce.should.be.true();
+        err.should.be.instanceOf(Error).and.containEql({message: 'err1'});
+        done();
+      });
+
+      this.eventEmitter.emit('error', new Error('err1'));
     }
   }
 };

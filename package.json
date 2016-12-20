@@ -1,6 +1,6 @@
 {
   "name": "gelf-pro",
-  "version": "0.9.1",
+  "version": "1.0.0",
   "main": "./lib/gelf-pro.js",
   "types": "./lib/definition.d.ts",
   "author": "Kanstantsin Kamkou <kkamkou@gmail.com>",
@@ -27,6 +27,6 @@
     "mocha": "~3.2.0",
     "mocha-lcov-reporter": "~1.2.0",
     "coveralls": "~2.11",
-    "sinon": "~1.17"
+    "sinon": "2.0.0-pre.4"
   }
 }
