@@ -7,8 +7,8 @@ node_js:
   - "3.3"
   - "4.7"
   - "5.12"
-  - "6.9"
-  - "7.2"
+  - "6.10"
+  - "7.6"
 notifications:
   slack:
     on_success: never
