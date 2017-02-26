@@ -407,5 +407,13 @@ module.exports = {
 
       this.eventEmitter.emit('error', new Error('err1'));
     }
+  },
+
+  'Adapter TCP(TLS)': {
+    'Abstract functionality': function () {
+      var tls = require('tls'),
+        adapter = getAdapter('tcp-tls');
+      adapter._instance().should.be.instanceOf(tls.TLSSocket);
+    }
   }
 };

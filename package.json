@@ -1,11 +1,11 @@
 {
   "name": "gelf-pro",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "main": "./lib/gelf-pro.js",
   "types": "./lib/definition.d.ts",
   "author": "Kanstantsin Kamkou <kkamkou@gmail.com>",
   "description": "The Graylog Extended Log Format for the Node.js",
-  "keywords": ["graylog", "gelf", "logging", "udp", "tcp"],
+  "keywords": ["graylog", "gelf", "logging", "udp", "tcp", "tls", "ssl"],
   "repository" : {
     "type" : "git",
     "url" : "https://github.com/kkamkou/node-gelf-pro.git"
@@ -25,7 +25,7 @@
     "istanbul": "~0.4.3",
     "should": "~11.1",
     "mocha": "~3.2.0",
-    "mocha-lcov-reporter": "~1.2.0",
+    "mocha-lcov-reporter": "~1.3.0",
     "coveralls": "~2.11",
     "sinon": "2.0.0-pre.4"
   }
