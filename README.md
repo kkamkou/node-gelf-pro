@@ -10,7 +10,7 @@ node-gelf - Graylog2 client library for Node.js. Pro - because of code-quality. 
 ## Installation
 ```
 "dependencies": {
-  "gelf-pro": "~1.0" // see the "releases" section
+  "gelf-pro": "~1.1" // see the "releases" section
 }
 ```
 ```npm install gelf-pro``` (**ALL** node.js versions are supported :)
@@ -32,13 +32,24 @@ log.setConfig({
   transform: [], // optional; transformers for a message
   broadcast: [], // optional; listeners of a message
   levels: {}, // optional; default: see the levels section below
-  adapterName: 'udp', // optional; currently supported "udp" and "tcp"; default: udp
-  adapterOptions: {
-    protocol: 'udp4', // udp only; optional; udp adapter: udp4, udp6; default: udp4
+  adapterName: 'udp', // optional; currently supported "udp", "tcp" and "tcp-tls"; default: udp
+  adapterOptions: { // this object is passed to the adapter.connect() method
+    // common
+    host: '127.0.0.1', // optional; default: 127.0.0.1
+    port: 12201, // optional; default: 12201
+    // ... and so on, for  :
+    
+    // tcp adapter example
     family: 4, // tcp only; optional; version of IP stack; default: 4
     timeout: 1000, // tcp only; optional; default: 10000 (10 sec)
-    host: '127.0.0.1', // optional; default: 127.0.0.1
-    port: 12201 // optional; default: 12201
+    
+    // udp adapter example
+    protocol: 'udp4', // udp only; optional; udp adapter: udp4, udp6; default: udp4
+    
+    // tcp-tls adapter example
+    key: fs.readFileSync('client-key.pem'), // tcp-tls only; optional; only if using the client certificate authentication
+    cert: fs.readFileSync('client-cert.pem'), // tcp-tls only; optional; only if using the client certificate authentication
+    ca: [fs.readFileSync('server-cert.pem')] // tcp-tls only; optional; only for the self-signed certificate
   }
 });
 ```
@@ -119,6 +130,7 @@ log.setConfig({
 
 - UDP (with deflation and chunking)
 - TCP
+- TCP via TLS(SSL)
 
 ### Tests
 #### Cli
