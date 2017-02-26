@@ -413,6 +413,7 @@ module.exports = {
     'Abstract functionality': function () {
       var tls = require('tls'),
         adapter = getAdapter('tcp-tls');
+      adapter.setOptions({host: 'unknown', port: 5555, timeout: 1000});
       adapter._instance().should.be.instanceOf(tls.TLSSocket);
     }
   }
