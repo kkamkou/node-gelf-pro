@@ -53,6 +53,8 @@ log.setConfig({
   }
 });
 ```
+> `log.setConfig` merges the data. Therefore you can call it multiple times.
+
 
 ### Basic functionality
 ```javascript
