@@ -37,7 +37,7 @@ log.setConfig({
     // common
     host: '127.0.0.1', // optional; default: 127.0.0.1
     port: 12201, // optional; default: 12201
-    // ... and so on, for  :
+    // ... and so on
     
     // tcp adapter example
     family: 4, // tcp only; optional; version of IP stack; default: 4
