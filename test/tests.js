@@ -162,18 +162,19 @@ module.exports = {
     },
 
     'Transform an Error object': function () {
-      var gelf = _.cloneDeep(gelfOriginal),
-        err = new Error('Some error message');
+      [['Some error message', 'Some error message'], ['', 'Error']].forEach(function (errSet) {
+        var gelf = _.cloneDeep(gelfOriginal),
+          err = new Error(errSet[0]);
 
-      sinon.spy(gelf, 'getStringFromObject');
+        sinon.spy(gelf, 'getStringFromObject');
+          gelf.info(err);
+          gelf.info('Example', err);
 
-      gelf.info(err);
-      gelf.info('Example', err);
-
-      JSON.parse(gelf.getStringFromObject.firstCall.returnValue)
-        .should.containEql({short_message: err.message.toString()});
-      JSON.parse(gelf.getStringFromObject.lastCall.returnValue)
-        .should.have.properties(['_error_message', '_error_stack']);
+          JSON.parse(gelf.getStringFromObject.firstCall.returnValue)
+            .should.containEql({short_message: errSet[1]});
+          JSON.parse(gelf.getStringFromObject.lastCall.returnValue)
+            .should.have.properties(['_error_message', '_error_stack']);
+      });
     },
 
     'Notify in case of a bogus usage': function () {
@@ -302,7 +303,7 @@ module.exports = {
         message = getLongMessage(100),
         sandbox = sinon.sandbox.create();
 
-      sandbox.stub(adapter, 'getArrayFromBuffer', function () {
+      sandbox.stub(adapter, 'getArrayFromBuffer').value(function () {
         return new Array(adapter.specification.chunkMaxLength.udp4);
       });
 
@@ -320,7 +321,7 @@ module.exports = {
         dgramSocket = require('dgram').createSocket('udp4'),
         mock = sinon.mock(dgramSocket).expects('close').once();
 
-      sinon.stub(dgramSocket, 'send', function (msg, offset, length, port, address, cb) {
+      sinon.stub(dgramSocket, 'send').callsFake(function (msg, offset, length, port, address, cb) {
         msg.should.be.an.instanceof(Buffer);
         offset.should.equal(0);
         length.should.equal(24);
@@ -354,7 +355,7 @@ module.exports = {
 
     'Abstract functionality': function (done) {
       var adapter = getAdapter('tcp');
-      adapter.setOptions({host: 'unknown', port: 5555, timeout: 1000});
+      adapter.setOptions({host: 'google.com', port: 5555, timeout: 1000});
       adapter.send('hello', function (err, result) {
         err.should.be.an.instanceof(Error);
         should.not.exist(result);
@@ -396,7 +397,6 @@ module.exports = {
 
     'Connection error': function (done) {
       var self = this;
-      this.adapter.setOptions({timeout: 1000});
       this.adapter.send('hello', function (err, results) {
         should.not.exists(results);
         self.eventEmitter.end.calledWithExactly().should.be.true();
@@ -413,7 +413,7 @@ module.exports = {
     'Abstract functionality': function () {
       var tls = require('tls'),
         adapter = getAdapter('tcp-tls');
-      adapter._instance({host: 'unknown', port: 5555}).should.be.instanceOf(tls.TLSSocket);
+      adapter._instance({host: 'google.com', port: 5555}).should.be.instanceOf(tls.TLSSocket);
     }
   }
 };
