@@ -263,8 +263,8 @@ module.exports = {
     }
   },
 
-  'Adapter': {
-    'abstract functionality': function () {
+  'Adapter (abstract)': {
+    'exposed functionality': function () {
       var abstract = Object.create(require(path.join(path.join(PATH_LIB, 'adapter', 'abstract'))));
       Object.keys(abstract).should.have.length(0);
       abstract.options.should.eql({});
@@ -342,7 +342,7 @@ module.exports = {
   },
 
   'Adapter TCP': {
-    beforeEach: function() {
+    beforeEach: function () {
       this.adapter = getAdapter('tcp');
 
       this.eventEmitter = new events.EventEmitter();
