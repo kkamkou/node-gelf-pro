@@ -325,7 +325,7 @@ module.exports = {
       });
 
       var client = adapter._createSocket();
-      sinon.stub(client, 'send').yields(new Error('sss'));
+      sinon.stub(client, 'send').yields(new Error('Random fail'));
       sinon.stub(adapter, '_createSocket').returns(client);
 
       adapter.send(msg, function (err, bytesSent) {
