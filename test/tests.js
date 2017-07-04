@@ -11,7 +11,7 @@ var path = require('path'),
 
 // helper functions
 var getLongMessage = function (len) {
-  var i = 0, message = '';
+  var i, message = '';
   for (i = 0; i <= (len || 10000); i++) {
     message += 'Lorem Ipsum is simply dummy text of the printing and typesetting industry.' +
         ' Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s, when an' +
@@ -264,7 +264,7 @@ module.exports = {
   },
 
   'Adapter (abstract)': {
-    'exposed functionality': function () {
+    'Exposed Functionality': function () {
       var abstract = Object.create(require(path.join(path.join(PATH_LIB, 'adapter', 'abstract'))));
       Object.keys(abstract).should.have.length(0);
       abstract.options.should.eql({});
@@ -313,6 +313,27 @@ module.exports = {
         sandbox.restore();
         done();
       });
+    },
+
+    'Socket exception in the first chunk': function (done) {
+      var adapter = getAdapter('udp'),
+        msg = getLongMessage(10000);
+      adapter.setOptions({
+        host: 'aUnresolvableAddressMaybeBecauseOfATypo.com',
+        port: 1234,
+        protocol: 'udp4'
+      });
+
+      var client = adapter._createSocket();
+      sinon.stub(client, 'send').yields(new Error('sss'));
+      sinon.stub(adapter, '_createSocket').returns(client);
+
+      adapter.send(msg, function (err, bytesSent) {
+        err.should.be.an.instanceof(Error);
+        should.not.exist(bytesSent);
+      });
+
+      done();
     },
 
     'Socket exception': function (done) {
