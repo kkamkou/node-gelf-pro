@@ -5,15 +5,23 @@
   "types": "./lib/definition.d.ts",
   "author": "Kanstantsin Kamkou <kkamkou@gmail.com>",
   "description": "The Graylog Extended Log Format for the Node.js",
-  "keywords": ["graylog", "gelf", "logging", "udp", "tcp", "tls", "ssl"],
-  "repository" : {
-    "type" : "git",
-    "url" : "https://github.com/kkamkou/node-gelf-pro.git"
+  "keywords": [
+    "graylog",
+    "gelf",
+    "logging",
+    "udp",
+    "tcp",
+    "tls",
+    "ssl"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kkamkou/node-gelf-pro.git"
   },
-  "bugs" : {
-    "url" : "https://github.com/kkamkou/node-gelf-pro/issues"
+  "bugs": {
+    "url": "https://github.com/kkamkou/node-gelf-pro/issues"
   },
-  "license" : "MIT",
+  "license": "MIT",
   "scripts": {
     "test": "./node_modules/.bin/istanbul cover ./node_modules/mocha/bin/_mocha --report lcovonly -- -R spec && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js && rm -rf ./coverage"
   },
@@ -28,6 +36,6 @@
     "mocha": "^3.5.3",
     "mocha-lcov-reporter": "^1.3.0",
     "should": "^13.0.1",
-    "sinon": "^2.0.0-pre.6"
+    "sinon": "^3.2.1"
   }
 }
