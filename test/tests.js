@@ -251,14 +251,14 @@ module.exports = {
       var gelf = _.cloneDeep(gelfOriginal),
         msg = getLongMessage(140);
 
-      msg.should.have.length(34545); // we need 32766
+      msg.should.have.length(34545); // we need 32765 (32765 + 1 = 32766, which is max)
 
       sinon.spy(gelf, 'getStringFromObject');
 
       gelf.info('Test', {longField: msg});
 
       var field = JSON.parse(gelf.getStringFromObject.firstCall.returnValue)._longField;
-      field.should.have.length(32766);
+      field.should.have.length(32765);
       field.should.endWith('...');
     }
   },
