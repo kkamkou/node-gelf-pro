@@ -1,6 +1,6 @@
 {
   "name": "gelf-pro",
-  "version": "1.2.0",
+  "version": "1.1.2",
   "main": "./lib/gelf-pro.js",
   "types": "./lib/definition.d.ts",
   "author": "Kanstantsin Kamkou <kkamkou@gmail.com>",
