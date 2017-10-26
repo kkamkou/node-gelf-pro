@@ -131,8 +131,11 @@ log.setConfig({
 ### Adapters
 
 - UDP (with deflation and chunking)
+  - Input: `GELF UDP`
 - TCP
+  - Input: `GELF TCP` (with `Null frame delimiter`)
 - TCP via TLS(SSL)
+  - Input: `GELF TCP` (with `Null frame delimiter` and `Enable TLS`)
 
 ### Tests
 #### Cli
