@@ -20,6 +20,15 @@ node-gelf - Graylog2 client library for Node.js. Pro - because of code-quality. 
 var log = require('gelf-pro');
 ```
 
+### Adapters
+
+- UDP (with deflation and chunking)
+  - Input: `GELF UDP`
+- TCP
+  - Input: `GELF TCP` (with `Null frame delimiter`)
+- TCP via TLS(SSL)
+  - Input: `GELF TCP` (with `Null frame delimiter` and `Enable TLS`)
+
 ### Configuration
 ```javascript
 // simple
@@ -127,15 +136,6 @@ log.setConfig({
 
 ### Levels ([1](https://httpd.apache.org/docs/current/mod/core.html#loglevel), [2](https://logging.apache.org/log4j/2.0/log4j-api/apidocs/org/apache/logging/log4j/Level.html), [3](http://stackoverflow.com/questions/2031163/when-to-use-the-different-log-levels))
 `emergency`, `alert`, `critical`, `error`, `warning` (`warn`), `notice`, `info`, `debug` (`log`)
-
-### Adapters
-
-- UDP (with deflation and chunking)
-  - Input: `GELF UDP`
-- TCP
-  - Input: `GELF TCP` (with `Null frame delimiter`)
-- TCP via TLS(SSL)
-  - Input: `GELF TCP` (with `Null frame delimiter` and `Enable TLS`)
 
 ### Tests
 #### Cli
