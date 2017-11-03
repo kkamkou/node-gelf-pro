@@ -30,7 +30,7 @@
     "lodash": "4.17.4"
   },
   "devDependencies": {
-    "coveralls": "^3.0.0",
+    "coveralls": "^2.13.3",
     "eslint": "^4.10.0",
     "istanbul": "^0.4.5",
     "mocha": "^3.0.0-2",
