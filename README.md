@@ -1,16 +1,15 @@
 node-gelf pro
-====================
+=============
 node-gelf - Graylog2 client library for Node.js. Pro - because of code-quality. GELF - The Graylog Extended Log Format.
 
 ![Build Status](https://travis-ci.org/kkamkou/node-gelf-pro.svg?branch=master)
 [![Coverage Status](https://coveralls.io/repos/github/kkamkou/node-gelf-pro/badge.svg?branch=master)](https://coveralls.io/github/kkamkou/node-gelf-pro?branch=master)
 [![Code Climate](https://codeclimate.com/github/kkamkou/node-gelf-pro/badges/gpa.svg)](https://codeclimate.com/github/kkamkou/node-gelf-pro)
-[![Dependency Status](https://www.versioneye.com/user/projects/56eca2764fb9b0000e68bce1/badge.svg?style=flat)](https://www.versioneye.com/user/projects/56eca2764fb9b0000e68bce1)
 
 ## Installation
 ```
 "dependencies": {
-  "gelf-pro": "~1.1" // see the "releases" section
+  "gelf-pro": "~1.2" // see the "releases" section
 }
 ```
 ```npm install gelf-pro``` (**ALL** node.js versions are supported :)
@@ -41,6 +40,7 @@ log.setConfig({
   transform: [], // optional; transformers for a message
   broadcast: [], // optional; listeners of a message
   levels: {}, // optional; default: see the levels section below
+  aliases: {}, // optional; default: see the aliases section below
   adapterName: 'udp', // optional; currently supported "udp", "tcp" and "tcp-tls"; default: udp
   adapterOptions: { // this object is passed to the adapter.connect() method
     // common
@@ -75,7 +75,10 @@ log.info("Hello world", extra);
 log.info("Hello world");
 
 log.error('Oooops.', new Error('An error message'));
+// ^-- extra becomes: {short_message: 'Oooops.', _error_message: 'An error message', _error_stack: Error's stack}
+
 log.error(new Error('An error message'));
+// ^-- extra becomes: {short_message: 'An error message', full_message: Error's stack}
 
 log.message(new Error('An error message'), 3); // same as previous
 ```
@@ -89,8 +92,7 @@ log.info(
   'a new msg goes here',
   {me: {fname: 'k', lname: 'k', bdate: new Date(2000, 01, 01)}}
 );
-// the extra becomes:
-// {_me_fname: 'k', _me_lname: 'k', _me_bdate: 'Tue Feb 01 2000 00:00:00 GMT+0100 (CET)'}
+// ^-- extra becomes: {_me_fname: 'k', _me_lname: 'k', _me_bdate: 'Tue Feb 01 2000 00:00:00 GMT+0100 (CET)'}
 ```
 
 ##### Filtering
@@ -135,7 +137,17 @@ log.setConfig({
 ```
 
 ### Levels ([1](https://httpd.apache.org/docs/current/mod/core.html#loglevel), [2](https://logging.apache.org/log4j/2.0/log4j-api/apidocs/org/apache/logging/log4j/Level.html), [3](http://stackoverflow.com/questions/2031163/when-to-use-the-different-log-levels))
-`emergency`, `alert`, `critical`, `error`, `warning` (`warn`), `notice`, `info`, `debug` (`log`)
+
+Default:  
+`{emergency: 0, alert: 1, critical: 2, error: 3, warning: 4, notice: 5, info: 6, debug: 7}`  
+Example: `log.emergency(...)`, `log.critical(...)`, etc.  
+Custom example: `{alert: 0, notice: 1, ...}`
+
+### Aliases
+
+Default: `{log: 'debug', warn: 'warning'}`  
+Example: `log.log(...) -> log.debug(...)`, `log.warn(...) -> log.warning(...)`, etc.  
+Custom example: `{red: 'alert', yellow: 'notice', ...}`
 
 ### Tests
 #### Cli
