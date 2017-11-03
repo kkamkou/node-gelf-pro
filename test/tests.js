@@ -171,7 +171,7 @@ module.exports = {
           gelf.info('Example', err);
 
           JSON.parse(gelf.getStringFromObject.firstCall.returnValue)
-            .should.containEql({short_message: errSet[1]});
+            .should.containEql({short_message: errSet[1], full_message: err.stack});
           JSON.parse(gelf.getStringFromObject.lastCall.returnValue)
             .should.have.properties(['_error_message', '_error_stack']);
       });
@@ -180,7 +180,8 @@ module.exports = {
     'Notify in case of a bogus usage': function () {
       var mock = sinon.mock(console),
         gelf = _.cloneDeep(gelfOriginal);
-      mock.expects('warn').once().withExactArgs('Extra should be object-like or undefined');
+      mock.expects('warn').once()
+        .withExactArgs('[gelf-pro]', 'extra should be object-like or undefined');
       sinon.spy(gelf, 'getStringFromObject');
       gelf.info('Bogus call', 'example');
       mock.verify();
@@ -399,6 +400,16 @@ module.exports = {
         done();
       });
 
+      this.eventEmitter.emit('connect');
+    },
+
+    'Remove null byte': function (done) {
+      this.eventEmitter.end.withArgs(new Buffer([0x68, 0x65, 0x6c, 0x6c, 0x6f, 0x00])).callsArg(1);
+      this.adapter.send("\x00he\x00llo\x00", function (err, result) {
+        should.not.exists(err);
+        result.should.equal(6);
+        done();
+      });
       this.eventEmitter.emit('connect');
     },
 
