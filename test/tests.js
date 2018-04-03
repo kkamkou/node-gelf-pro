@@ -300,13 +300,8 @@ module.exports = {
 
     'Chunks limitation validation': function (done) {
       var gelf = _.cloneDeep(gelfOriginal),
-        adapter = gelf.getAdapter(),
-        message = getLongMessage(100),
+        message = getLongMessage(300000),
         sandbox = sinon.sandbox.create();
-
-      sandbox.stub(adapter, 'getArrayFromBuffer').value(function () {
-        return new Array(adapter.specification.chunkMaxLength.udp4);
-      });
 
       gelf.send(message, function (err, result) {
         err.should.be.an.instanceof(Error);
@@ -377,7 +372,7 @@ module.exports = {
 
     'Abstract functionality': function (done) {
       var adapter = getAdapter('tcp');
-      adapter.setOptions({host: 'google.com', port: 5555, timeout: 1000});
+      adapter.setOptions({host: 'localhost', port: 5555, timeout: 1000});
       adapter.send('hello', function (err, result) {
         err.should.be.an.instanceof(Error);
         should.not.exist(result);
