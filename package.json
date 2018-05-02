@@ -1,6 +1,6 @@
 {
   "name": "gelf-pro",
-  "version": "1.2.1",
+  "version": "1.2.2",
   "main": "./lib/gelf-pro.js",
   "types": "./lib/definition.d.ts",
   "author": "Kanstantsin Kamkou <kkamkou@gmail.com>",
@@ -30,7 +30,7 @@
     "lodash": "4.17.5"
   },
   "devDependencies": {
-    "coveralls": "^2.13.3",
+    "coveralls": "^3.0.1",
     "eslint": "^4.19.1",
     "istanbul": "^0.4.5",
     "mocha": "^3.0.0-2",
