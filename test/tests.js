@@ -2,12 +2,16 @@
 
 var PATH_LIB = ['..', 'lib'].join('/');
 
-var path = require('path'),
-  sinon = require('sinon'),
+var dns = require('dns'),
   events = require('events'),
+  path = require('path'),
   should = require('should'),
+  sinon = require('sinon'),
   _ = require('lodash'),
   gelfOriginal = require(path.join(PATH_LIB, 'gelf-pro'));
+
+// compatibility
+var buffer = require(path.join(PATH_LIB, 'compatibility', 'buffer'));
 
 // helper functions
 var getLongMessage = function (len) {
@@ -287,12 +291,12 @@ module.exports = {
       var adapter = getAdapter('udp'),
         msgOriginal = getLongMessage(100),
         msgTmp = '',
-        message = new Buffer(msgOriginal),
+        message = buffer.from(msgOriginal),
         result = adapter.getArrayFromBuffer(message, 100);
 
       result.should.have.length(248);
       result.forEach(function (chunk) {
-        msgTmp += (new Buffer(chunk)).toString();
+        msgTmp += (buffer.from(chunk)).toString();
       });
 
       msgOriginal.should.be.exactly(msgTmp);
@@ -313,7 +317,9 @@ module.exports = {
 
     'Socket exception in the first chunk': function (done) {
       var adapter = getAdapter('udp'),
-        msg = getLongMessage(10000);
+        msg = getLongMessage(10000),
+        sandbox = sinon.sandbox.create();
+
       adapter.setOptions({
         host: 'aUnresolvableAddressMaybeBecauseOfATypo.com',
         port: 1234,
@@ -322,14 +328,36 @@ module.exports = {
 
       var client = adapter._createSocket();
       sinon.stub(client, 'send').yields(new Error('Random fail'));
-      sinon.stub(adapter, '_createSocket').returns(client);
+      sandbox.stub(adapter, '_createSocket').returns(client);
 
       adapter.send(msg, function (err, bytesSent) {
         err.should.be.an.instanceof(Error);
         should.not.exist(bytesSent);
+        sandbox.restore();
+        done();
+      });
+    },
+
+    'DNS exception': function (done) {
+      var adapter = getAdapter('udp'),
+        msg = getLongMessage(10000),
+        sandbox = sinon.sandbox.create();
+
+      adapter.setOptions({
+        host: 'aUnresolvableAddressMaybeBecauseOfATypo.com',
+        port: 1234,
+        protocol: 'udp4'
       });
 
-      done();
+      sandbox.stub(dns, 'lookup').yields(new Error('DNS lookup exception'));
+
+      adapter.send(msg, function (err, bytesSent) {
+        err.should.be.an.instanceof(Error);
+        err.message.should.equal('DNS lookup exception');
+        bytesSent.should.equal(0);
+        sandbox.restore();
+        done();
+      });
     },
 
     'Socket exception': function (done) {
@@ -384,7 +412,7 @@ module.exports = {
       var self = this,
         options = {timeout: 123};
 
-      this.eventEmitter.end.withArgs(new Buffer([0x68, 0x65, 0x6c, 0x6c, 0x6f, 0x00])).callsArg(1);
+      this.eventEmitter.end.withArgs(buffer.from([0x68, 0x65, 0x6c, 0x6c, 0x6f, 0x00])).callsArg(1);
 
       this.adapter.setOptions(options);
       this.adapter.send('hello', function (err, result) {
@@ -399,7 +427,7 @@ module.exports = {
     },
 
     'Remove null byte': function (done) {
-      this.eventEmitter.end.withArgs(new Buffer([0x68, 0x65, 0x6c, 0x6c, 0x6f, 0x00])).callsArg(1);
+      this.eventEmitter.end.withArgs(buffer.from([0x68, 0x65, 0x6c, 0x6c, 0x6f, 0x00])).callsArg(1);
       this.adapter.send("\x00he\x00llo\x00", function (err, result) {
         should.not.exists(err);
         result.should.equal(6);

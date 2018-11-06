@@ -31,7 +31,7 @@ var log = require('gelf-pro');
 ### Configuration
 ```javascript
 // simple
-log.setConfig({host: 'my.glog-server.net'});
+log.setConfig({adapterOptions: {host: 'my.glog-server.net'}});
 
 // advanced
 log.setConfig({
@@ -165,7 +165,6 @@ npm test
 #### Contributors
 
 - [corbinu](https://github.com/corbinu)
-- [jucrouzet](https://github.com/jucrouzet)
 
 ## License
 The MIT License (MIT)
