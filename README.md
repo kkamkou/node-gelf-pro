@@ -165,6 +165,7 @@ npm test
 #### Contributors
 
 - [corbinu](https://github.com/corbinu)
+- [joelharkes](https://github.com/joelharkes)
 
 ## License
 The MIT License (MIT)
