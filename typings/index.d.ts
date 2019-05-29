@@ -1,42 +1,67 @@
-import { send } from "../lib/adapter/udp";
+/**
+  You can declare your available logging methods by augmenting this module. Example with the default levels:
+  ```
+  declare module 'gelf-pro' {
+    function emergency(message: Message, extra?: MessageExtra, callback?: MessageCallback);
+    function alert(message: Message, extra?: MessageExtra, callback?: MessageCallback);
+    function critical(message: Message, extra?: MessageExtra, callback?: MessageCallback);
+    function error(message: Message, extra?: MessageExtra, callback?: MessageCallback);
+    function warning(message: Message, extra?: MessageExtra, callback?: MessageCallback);
+    function warn(message: Message, extra?: MessageExtra, callback?: MessageCallback);
+    function notice(message: Message, extra?: MessageExtra, callback?: MessageCallback);
+    function info(message: Message, extra?: MessageExtra, callback?: MessageCallback);
+    function debug(message: Message, extra?: MessageExtra, callback?: MessageCallback);
+    function log(message: Message, extra?: MessageExtra, callback?: MessageCallback);
+  }
+  ```
+ */
 
-declare namespace GelfPro {
+declare module 'gelf-pro' {
 
-  interface Logger {
-    setConfig(opts: GelfPro.Settings): GelfPro.Logger;
-    getAdapter(): Adapter
+  export type Message = string | Error;
+  export type MessageExtra = object | Error;
+  export type MessageCallback = (error?: Error, packetLength?: number) => void;
+
+  export function setConfig(opts: Partial<Settings>): void;
+  export function getAdapter(): Adapter;
+  export function getStringFromObject(object: object): string;
+  export function send(message: Message, callback: MessageCallback);
+  export function message(message: Message, lvl: number, extra?: MessageExtra, callback?: MessageCallback);
+
+  export interface Logger {
+    setConfig(opts: Partial<Settings>): Logger;
+    getAdapter(): Adapter;
     getStringFromObject(object: object): string;
-    send(message: string, callback: (error?: Error, packetLength?: number) => void);
-    message(message: string, lvl: number, extra: any, callback: (error?: Error, packetLength?: number) => void);
+    send(message: Message, callback: MessageCallback);
+    message(message: Message, lvl: number, extra: any, callback: MessageCallback);
   }
 
-  interface Adapter {
+  export interface Adapter {
     setOptions(options: any): Adapter;
-    send(message: string, callback: (error?: Error, packetLength?: number) => void);
+    send(message: Message, callback: MessageCallback);
   }
 
-
-  interface Settings {
+  export interface Settings {
     /**
      * Default fields for all messages.
      */
-    fields?: { [key: string]: any },
+    fields: { [key: string]: any },
     /**
      * Filter functions, return false in any of them to not send the log message.
      */
-    filter?: Array<(message: any) => boolean>;
+    filter: Array<(message: any) => boolean>;
     /**
      * Transformer methods, to transform log message.
      */
-    transform?: Array<(message: any) => any>;
+    transform: Array<(message: any) => any>;
     /**
      * @default {emergency: 0, alert: 1, critical: 2, error: 3, warning: 4, notice: 5, info: 6, debug: 7}
      */
-    levels?: { [levelName: string]: number },
+    levels: { [levelName: string]: number },
     /**
      * Log level aliases: {alias: logLevelName}
      */
-    aliases?: { [allias: string]: string }
+    aliases: { [allias: string]: string }
     /**
      * @default udp
      */
@@ -78,10 +103,7 @@ declare namespace GelfPro {
        * only if using the client certificate authentication
        */
       ca?: string;
-    },
-    levels: { [key: string]: number }
+    }
   }
 
 }
-
-export default GelfPro.Logger
