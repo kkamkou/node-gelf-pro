@@ -166,6 +166,7 @@ npm test
 
 - [corbinu](https://github.com/corbinu)
 - [joelharkes](https://github.com/joelharkes)
+- [mkalam-alami](https://github.com/mkalam-alami)
 
 #### License
 
