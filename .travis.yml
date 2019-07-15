@@ -10,9 +10,9 @@ node_js:
   - "7.10"
   - "8.16"
   - "9.11"
-  - "10.15"
+  - "10.16"
   - "11.15"
-  - "12.2"
+  - "12.6"
 notifications:
   slack:
     on_success: never
