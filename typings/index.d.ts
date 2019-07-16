@@ -25,20 +25,20 @@ declare module 'gelf-pro' {
   export function setConfig(opts: Partial<Settings>): void;
   export function getAdapter(): Adapter;
   export function getStringFromObject(object: object): string;
-  export function send(message: Message, callback: MessageCallback);
-  export function message(message: Message, lvl: number, extra?: MessageExtra, callback?: MessageCallback);
+  export function send(message: Message, callback: MessageCallback): void;
+  export function message(message: Message, lvl: number, extra?: MessageExtra, callback?: MessageCallback): void;
 
   export interface Logger {
     setConfig(opts: Partial<Settings>): Logger;
     getAdapter(): Adapter;
     getStringFromObject(object: object): string;
-    send(message: Message, callback: MessageCallback);
-    message(message: Message, lvl: number, extra: any, callback: MessageCallback);
+    send(message: Message, callback: MessageCallback): void;
+    message(message: Message, lvl: number, extra: any, callback: MessageCallback): void;
   }
 
   export interface Adapter {
     setOptions(options: any): Adapter;
-    send(message: Message, callback: MessageCallback);
+    send(message: Message, callback: MessageCallback): void;
   }
 
   export interface Settings {
