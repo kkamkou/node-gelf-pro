@@ -1,7 +1,7 @@
 /**
-  You can declare your available logging methods by augmenting this module. Example with the default levels:
-  ```
-  declare module 'gelf-pro' {
+ You can declare your available logging methods by augmenting this module. Example with the default levels:
+ ```
+ declare module 'gelf-pro' {
     function emergency(message: Message, extra?: MessageExtra, callback?: MessageCallback);
     function alert(message: Message, extra?: MessageExtra, callback?: MessageCallback);
     function critical(message: Message, extra?: MessageExtra, callback?: MessageCallback);
@@ -13,7 +13,7 @@
     function debug(message: Message, extra?: MessageExtra, callback?: MessageCallback);
     function log(message: Message, extra?: MessageExtra, callback?: MessageCallback);
   }
-  ```
+ ```
  */
 
 declare module 'gelf-pro' {
@@ -23,21 +23,30 @@ declare module 'gelf-pro' {
   export type MessageCallback = (error?: Error, packetLength?: number) => void;
 
   export function setConfig(opts: Partial<Settings>): void;
+
   export function getAdapter(): Adapter;
+
   export function getStringFromObject(object: object): string;
+
   export function send(message: Message, callback: MessageCallback): void;
+
   export function message(message: Message, lvl: number, extra?: MessageExtra, callback?: MessageCallback): void;
 
   export interface Logger {
     setConfig(opts: Partial<Settings>): Logger;
+
     getAdapter(): Adapter;
+
     getStringFromObject(object: object): string;
+
     send(message: Message, callback: MessageCallback): void;
+
     message(message: Message, lvl: number, extra: any, callback: MessageCallback): void;
   }
 
   export interface Adapter {
     setOptions(options: any): Adapter;
+
     send(message: Message, callback: MessageCallback): void;
   }
 
@@ -105,5 +114,4 @@ declare module 'gelf-pro' {
       ca?: string;
     }
   }
-
 }
