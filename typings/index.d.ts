@@ -22,7 +22,7 @@ declare module 'gelf-pro' {
   export type MessageExtra = object | Error;
   export type MessageCallback = (error?: Error, packetLength?: number) => void;
 
-  export function setConfig(opts: Partial<Settings>): void;
+  export function setConfig(opts: Partial<Settings>): Logger;
 
   export function getAdapter(): Adapter;
 
@@ -41,7 +41,7 @@ declare module 'gelf-pro' {
 
     send(message: Message, callback: MessageCallback): void;
 
-    message(message: Message, lvl: number, extra: any, callback: MessageCallback): void;
+    message(message: Message, lvl: number, extra?: any, callback?: MessageCallback): void;
   }
 
   export interface Adapter {
