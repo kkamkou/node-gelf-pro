@@ -100,6 +100,14 @@ module.exports = {
       result.should.not.have.property('id');
     },
 
+    'Validate timestamp': function () {
+      var gelf = _.cloneDeep(gelfOriginal);
+      sinon.spy(gelf, 'getStringFromObject');
+      gelf.info('Test message');
+      ("" + JSON.parse(gelf.getStringFromObject.lastCall.returnValue).timestamp)
+        .should.match(/^\d{10}\.\d{3}$/);
+    },
+
     'Normalize extra fields': function () {
       var mock = sinon.mock(console);
       mock.expects('warn').once().withExactArgs('the.first.value: the key format is not valid');
@@ -128,7 +136,6 @@ module.exports = {
       result.should.have.property('_level1_key-with-dash').equal(1);
       result.should.have.property('_level1_level2_value2').equal('value2');
       result.should.have.property('_level1_level2_level3_value3').equal('value3');
-
     },
 
     'Avoid an empty message': function (done) {
