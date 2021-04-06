@@ -2,7 +2,7 @@ node-gelf pro
 =============
 node-gelf - Graylog2 client library for Node.js. Pro - because of code-quality (at 2015). GELF - The Graylog Extended Log Format.
 
-![Build Status](https://travis-ci.org/kkamkou/node-gelf-pro.svg?branch=master)
+![Build Status](https://travis-ci.com/kkamkou/node-gelf-pro.svg?branch=master)
 [![Coverage Status](https://coveralls.io/repos/github/kkamkou/node-gelf-pro/badge.svg?branch=master)](https://coveralls.io/github/kkamkou/node-gelf-pro?branch=master)
 [![Code Climate](https://codeclimate.com/github/kkamkou/node-gelf-pro/badges/gpa.svg)](https://codeclimate.com/github/kkamkou/node-gelf-pro)
 
