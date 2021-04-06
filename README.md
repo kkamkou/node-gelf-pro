@@ -1,6 +1,6 @@
 node-gelf pro
 =============
-node-gelf - Graylog2 client library for Node.js. Pro - because of code-quality. GELF - The Graylog Extended Log Format.
+node-gelf - Graylog2 client library for Node.js. Pro - because of code-quality (at 2015). GELF - The Graylog Extended Log Format.
 
 ![Build Status](https://travis-ci.org/kkamkou/node-gelf-pro.svg?branch=master)
 [![Coverage Status](https://coveralls.io/repos/github/kkamkou/node-gelf-pro/badge.svg?branch=master)](https://coveralls.io/github/kkamkou/node-gelf-pro?branch=master)
@@ -12,7 +12,7 @@ node-gelf - Graylog2 client library for Node.js. Pro - because of code-quality. 
   "gelf-pro": "~1.3" // see the "releases" section
 }
 ```
-```npm install gelf-pro``` (**ALL** node.js versions are supported :)
+```npm install gelf-pro``` (**ALL** node.js versions are supported [0.x to 15.x] :)
 
 ## Initialization
 ```javascript
@@ -86,7 +86,7 @@ log.message(new Error('An error message'), 3); // same as previous
 ##### Extra
 In case `extra` [is a plain object](https://lodash.com/docs#isPlainObject),
 the library converts it to a readable format. Other values [are converted to string](https://lodash.com/docs#toString).
-Acceptable format of a key is: `^[\w-]$`
+The acceptable format of a key is: `^[\w-]$`
 ```javascript
 log.info(
   'a new msg goes here',
