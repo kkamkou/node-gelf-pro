@@ -105,7 +105,7 @@ module.exports = {
       sinon.spy(gelf, 'getStringFromObject');
       gelf.info('Test message');
       ("" + JSON.parse(gelf.getStringFromObject.lastCall.returnValue).timestamp)
-        .should.match(/^\d{10}\.\d{3}$/);
+        .should.match(/^\d{10}\.\d{2,3}$/);
     },
 
     'Normalize extra fields': function () {
