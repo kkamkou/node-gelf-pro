@@ -38,7 +38,7 @@ jobs:
         working-directory: artifacts
 
       - name: publish
-        run: npm publish artifacts --tag ${{github.event.release.tag_name}}
+        run: npm publish artifacts --access public
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
 
