@@ -27,6 +27,7 @@ jobs:
       - uses: actions/setup-node@v2
         with:
           node-version: 'lts/*'
+          registry-url: 'https://registry.npmjs.org'
 
       - uses: actions/download-artifact@v2
         with:
@@ -41,6 +42,7 @@ jobs:
         run: npm publish artifacts --access public
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+          NPM_TOKEN: ${{secrets.NPM_TOKEN}}
 
       - uses: geekyeggo/delete-artifact@v1
         with:

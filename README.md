@@ -1,4 +1,4 @@
-node-gelf pro
+gelf pro
 =============
 node-gelf - Graylog2 client library for Node.js. Pro - because of code-quality (at 2015). GELF - The Graylog Extended Log Format.
 
