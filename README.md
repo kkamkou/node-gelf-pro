@@ -12,7 +12,7 @@ node-gelf - Graylog2 client library for Node.js. Pro - because of code-quality (
   "gelf-pro": "~1.3" // see the "releases" section
 }
 ```
-```npm install gelf-pro``` (**ALL** node.js versions are supported [0.x to 15.x] :)
+```npm install gelf-pro``` (**ALL** node.js versions are supported [0.x to 18.x] :)
 
 ## Initialization
 ```javascript
@@ -23,6 +23,7 @@ var log = require('gelf-pro');
 
 To provide predictable behaviour, all adapters do **NOT** re-use the socket connection.
 There are multiple ([1](https://github.com/kkamkou/node-gelf-pro/pull/68), [2](https://github.com/fdelayen/node-gelf-pro/commit/b52b4b6b1ff26772314b8673dd6fd724c0937caa)) variants available which you can borrow from (and create a new adapter).
+[See related section](#third-party-adapters).
 
 - UDP (with deflation and chunking)
   - Input: `GELF UDP`
@@ -69,8 +70,7 @@ log.setConfig({
   }
 });
 ```
-> `log.setConfig` merges the data. Therefore you can call it multiple times.
-
+> `log.setConfig` merges the data. Therefore, you can call it multiple times.
 
 ### Basic functionality
 ```javascript
@@ -149,6 +149,15 @@ Default:
 `{emergency: 0, alert: 1, critical: 2, error: 3, warning: 4, notice: 5, info: 6, debug: 7}`  
 Example: `log.emergency(...)`, `log.critical(...)`, etc.  
 Custom example: `{alert: 0, notice: 1, ...}`
+
+### Third party adapters
+You can force using custom adapter by setting the `adapter` right after initialisation.  The [signature](lib/adapter/abstract.js) might be found here. 
+```javascript
+  var log = require('gelf-pro');
+  var myFancyAdapter = require('...');
+  log.adapter = myFancyAdapter;
+  // (!) adapterName and adapterOptions will be ignored
+```
 
 ### Aliases
 
