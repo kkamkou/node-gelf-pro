@@ -8,14 +8,14 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       - name: artifacts
         run: |
           mkdir /tmp/output
           mv -t /tmp/output lib typings README.md LICENSE package.json
 
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         with:
           name: artifacts
           path: /tmp/output
@@ -29,7 +29,7 @@ jobs:
           node-version: 'lts/*'
           registry-url: 'https://registry.npmjs.org'
 
-      - uses: actions/download-artifact@v2
+      - uses: actions/download-artifact@v3
         with:
           name: artifacts
           path: artifacts
@@ -39,7 +39,7 @@ jobs:
         working-directory: artifacts
 
       - name: publish
-        run: npm publish artifacts --access public
+        run: npm publish ./artifacts/ --access public
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
 
