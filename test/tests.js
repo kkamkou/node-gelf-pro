@@ -285,6 +285,19 @@ module.exports = {
   },
 
   'Adapter UDP': {
+    'Send in chunks': function (done) {
+      var adapter = getAdapter('udp'),
+        message = getLongMessage(15000),
+        sandbox = sinon.sandbox.create();
+
+      adapter.send(message, function (err, bytesSent) {
+        should.not.exist(err);
+        bytesSent.should.equal(14570);
+        sandbox.restore();
+        done();
+      });
+    },
+
     'Compression validation': function (done) {
       var adapter = getAdapter('udp');
       adapter.deflate('test', function (err, buf) {
@@ -314,9 +327,9 @@ module.exports = {
         message = getLongMessage(300000),
         sandbox = sinon.sandbox.create();
 
-      gelf.send(message, function (err, result) {
+      gelf.send(message, function (err, bytesSent) {
         err.should.be.an.instanceof(Error);
-        should.not.exist(result);
+        bytesSent.should.equal(0);
         sandbox.restore();
         done();
       });
@@ -339,7 +352,7 @@ module.exports = {
 
       adapter.send(msg, function (err, bytesSent) {
         err.should.be.an.instanceof(Error);
-        should.not.exist(bytesSent);
+        bytesSent.should.equal(0);
         sandbox.restore();
         done();
       });
@@ -379,15 +392,15 @@ module.exports = {
         length.should.equal(24);
         port.should.equal(12201);
         address.should.equal('127.0.0.1');
-        cb(new Error(msgError));
+        cb(new Error(msgError), 0);
       });
 
       sinon.stub(gelf.getAdapter(), '_createSocket').returns(dgramSocket);
 
-      gelf.send('test', function (err, result) {
+      gelf.send('test', function (err, bytesSent) {
         mock.verify();
         err.message.should.equal(msgError);
-        should.not.exist(result);
+        bytesSent.should.equal(0);
         done();
       });
     }
