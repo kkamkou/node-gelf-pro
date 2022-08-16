@@ -60,6 +60,10 @@ declare module 'gelf-pro' {
      */
     filter: Array<(message: any) => boolean>;
     /**
+     * Broadcast methods, to broadcast log message.
+     */
+    broadcast: Array<(message: any) => any>;
+    /**
      * Transformer methods, to transform log message.
      */
     transform: Array<(message: any) => any>;
