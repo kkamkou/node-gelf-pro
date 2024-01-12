@@ -13,7 +13,7 @@ node-gelf - Graylog2 client library for Node.js. Pro - because of code-quality (
 }
 ```
 
-`npm install gelf-pro` (**ALL** node.js versions are supported [0.x to 19.x] :)
+`npm install gelf-pro` (**ALL** node.js versions are supported [0.x to 20.x] :)
 
 Library depends on: `lodash#~4.17`
 
