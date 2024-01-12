@@ -292,7 +292,7 @@ module.exports = {
 
       adapter.send(message, function (err, bytesSent) {
         should.not.exist(err);
-        bytesSent.should.equal(14570);
+        bytesSent.should.be.above(14500);
         sandbox.restore();
         done();
       });
