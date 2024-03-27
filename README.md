@@ -27,7 +27,7 @@ var log = require('gelf-pro');
 > To ensure consistent behavior, **none of the existing adapters re-use the socket connection**. Re-using socket connections can lead to resource leakage, complexity in state management, concurrency issues, security risks, and may not always provide significant performance benefits.
 > It's often simpler and safer to establish new connections as needed rather than re-using existing ones, ensuring better resource utilization and reducing potential complications in network communication.
 >
-> There are multiple ([1](https://github.com/kkamkou/node-gelf-pro/pull/68), [2](https://github.com/fdelayen/node-gelf-pro/commit/b52b4b6b1ff26772314b8673dd6fd724c0937caa)) variants available for you to borrow from and create a new adapter.
+> There are multiple ([1](https://github.com/kkamkou/node-gelf-pro/pull/68), [2](https://github.com/fdelayen/node-gelf-pro/commit/b52b4b6b1ff26772314b8673dd6fd724c0937caa)) variants available for you to borrow from and create a new adapter. [See related section](#third-party-adapters).
 
 - UDP (with deflation and chunking)
   - Input: `GELF UDP`
