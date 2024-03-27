@@ -1,6 +1,6 @@
 gelf pro
 =============
-node-gelf - Graylog2 client library for Node.js. Pro - because of code-quality (at 2015). GELF - The Graylog Extended Log Format.
+node-gelf - Graylog2 client library for Node.js. GELF - The Graylog Extended Log Format.
 
 ![Build Status](https://github.com/kkamkou/node-gelf-pro/actions/workflows/node.js.yml/badge.svg?branch=master)
 ![Coverage Status](https://coveralls.io/repos/github/kkamkou/node-gelf-pro/badge.svg?branch=master)
@@ -23,9 +23,11 @@ var log = require('gelf-pro');
 
 ### Adapters
 
-> :warning: To provide predictable behaviour, all existing adapters do **NOT** re-use the socket connection.  
-There are multiple ([1](https://github.com/kkamkou/node-gelf-pro/pull/68), [2](https://github.com/fdelayen/node-gelf-pro/commit/b52b4b6b1ff26772314b8673dd6fd724c0937caa)) variants available which you can borrow from (and create a new adapter).  
-[See related section](#third-party-adapters).
+> [!WARNING]
+> To ensure consistent behavior, **none of the existing adapters re-use the socket connection**. Re-using socket connections can lead to resource leakage, complexity in state management, concurrency issues, security risks, and may not always provide significant performance benefits.
+> It's often simpler and safer to establish new connections as needed rather than re-using existing ones, ensuring better resource utilization and reducing potential complications in network communication.
+>
+> There are multiple ([1](https://github.com/kkamkou/node-gelf-pro/pull/68), [2](https://github.com/fdelayen/node-gelf-pro/commit/b52b4b6b1ff26772314b8673dd6fd724c0937caa)) variants available for you to borrow from and create a new adapter.
 
 - UDP (with deflation and chunking)
   - Input: `GELF UDP`
@@ -35,9 +37,10 @@ There are multiple ([1](https://github.com/kkamkou/node-gelf-pro/pull/68), [2](h
   - Input: `GELF TCP` (with `Null frame delimiter` and `Enable TLS`)
 
 
-> Withing more or less stable network (which is most likely) I would recommend using the "udp" adapter.    
-I would also recommend it for an average to high-loaded project.  
-For sensitive information `tcp-tls` adapter is recommended.
+> [!NOTE]
+> Within a more or less stable network (which is most likely), I would recommend using the `udp` adapter.
+> I would also recommend it for an average to high-loaded project.
+> For sensitive information, the `tcp-tls` adapter is recommended.
 
 ### Configuration
 ```javascript
