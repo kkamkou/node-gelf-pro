@@ -1,6 +1,12 @@
 gelf pro
 =============
-node-gelf - Graylog2 client library for Node.js. GELF - The Graylog Extended Log Format.
+`gelf-pro` - Graylog2 client library for Node.js.  
+Sends logs to Graylog2 server in GELF (Graylog Extended Log Format) format.
+
+**Features:**
+- JS object marshalling
+- UDP/TCP/TLS support
+- Filtering, Transforming, Broadcasting.
 
 ![Build Status](https://github.com/kkamkou/node-gelf-pro/actions/workflows/node.js.yml/badge.svg?branch=master)
 ![Coverage Status](https://coveralls.io/repos/github/kkamkou/node-gelf-pro/badge.svg?branch=master)
@@ -12,7 +18,7 @@ node-gelf - Graylog2 client library for Node.js. GELF - The Graylog Extended Log
 }
 ```
 
-`npm install gelf-pro` (**ALL** node.js versions are supported [0.x to 20.x] :)
+`npm install gelf-pro` (**ALL** node.js versions are supported [0.x to 2x.x] :)
 
 Library depends on: `lodash#~4.17`
 
