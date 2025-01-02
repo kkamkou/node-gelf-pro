@@ -329,6 +329,7 @@ module.exports = {
 
       gelf.send(message, function (err, bytesSent) {
         err.should.be.an.instanceof(Error);
+        err.message.should.equal('A message MUST NOT consist of more than 128 chunks');
         bytesSent.should.equal(0);
         sandbox.restore();
         done();
@@ -347,12 +348,37 @@ module.exports = {
       });
 
       var client = adapter._createSocket();
-      sinon.stub(client, 'send').yields(new Error('Random fail'));
+      sandbox.stub(client, 'send').yields(new Error('Random fail'));
       sandbox.stub(adapter, '_createSocket').returns(client);
 
       adapter.send(msg, function (err, bytesSent) {
         err.should.be.an.instanceof(Error);
+        err.message.should.equal('Random fail');
         bytesSent.should.equal(0);
+        sandbox.restore();
+        done();
+      });
+    },
+
+    'Socket exception in the middle': function (done) {
+      var adapter = getAdapter('udp'),
+        msg = getLongMessage(10000),
+        sandbox = sinon.sandbox.create();
+
+      var client = adapter._createSocket();
+
+      sandbox.stub(adapter, '_createSocket').returns(client);
+      sandbox.stub(client, 'send')
+        .onFirstCall().yields(null, 100)
+        .onThirdCall().yields(null, 300)
+        .onSecondCall().callsFake(function () {
+          client.emit('error', new Error('Unable to send the chunk'));
+        });
+
+      adapter.send(msg, function (err, bytesSent) {
+        err.should.be.an.instanceof(Error);
+        err.message.should.equal('Unable to send the chunk');
+        bytesSent.should.equal(100);
         sandbox.restore();
         done();
       });
@@ -386,7 +412,7 @@ module.exports = {
         dgramSocket = require('dgram').createSocket('udp4'),
         mock = sinon.mock(dgramSocket).expects('close').once();
 
-      sinon.stub(dgramSocket, 'send').callsFake(function (msg, offset, length, port, address, cb) {
+      var stub = sinon.stub(dgramSocket, 'send').callsFake(function (msg, offset, length, port, address, cb) {
         msg.should.be.an.instanceof(Buffer);
         offset.should.equal(0);
         length.should.equal(24);
@@ -401,6 +427,7 @@ module.exports = {
         mock.verify();
         err.message.should.equal(msgError);
         bytesSent.should.equal(0);
+        stub.restore();
         done();
       });
     }
