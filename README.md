@@ -14,13 +14,13 @@ Sends logs to Graylog2 server in GELF (Graylog Extended Log Format) format.
 ## Installation
 ```
 "dependencies": {
-  "gelf-pro": "~1.3" // see the "releases" section
+  "gelf-pro": "~1.4" // see the "releases" section
 }
 ```
 
 `npm install gelf-pro` (**ALL** node.js versions are supported [0.x to 2x.x] :)
 
-Library depends on: `lodash#~4.17`
+Library only depends on: `lodash#~4.17`
 
 ## Initialization
 ```javascript
