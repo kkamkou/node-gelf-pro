@@ -39,18 +39,38 @@ module.exports = {
     },
 
     'Expose pre-defined levels': function () {
+      var gelf = _.cloneDeep(gelfOriginal);
       var levels = {
-        emergency: 0, alert: 1, critical: 2, error: 3, warning: 4, warn: 4, notice: 5, info: 6,
-        debug: 7, log: 7
+        emergency: 0, alert: 1, critical: 2, error: 3,
+        warning: 4, notice: 5, info: 6, debug: 7
       };
 
-      var gelf = _.cloneDeep(gelfOriginal);
       sinon.spy(gelf, 'getStringFromObject');
 
       _.forEach(levels, function (lvl, fnc) {
         gelf[fnc]('test');
         JSON.parse(gelf.getStringFromObject.lastCall.returnValue).level.should.equal(lvl);
       });
+    },
+
+    'Modify aliases': function () {
+      var gelf = _.cloneDeep(gelfOriginal);
+      var verifyAliasExists = function (obj) {
+        _.forEach(obj, function (lvl, fnc) {
+          gelf[fnc]('test');
+          JSON.parse(gelf.getStringFromObject.lastCall.returnValue).level.should.equal(lvl);
+        });
+      }
+
+      sinon.spy(gelf, 'getStringFromObject');
+
+      verifyAliasExists({log: 7, warn: 4});
+
+      gelf.setConfig({aliases: {waaagh: 'emergency', oopsie: 'alert'}});
+      should.not.exist(gelf.log);
+      should.not.exist(gelf.warn);
+
+      verifyAliasExists({waaagh: 0, oopsie: 1});
     },
 
     'Manually set level': function () {

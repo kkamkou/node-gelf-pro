@@ -13,8 +13,9 @@ Sends logs to Graylog2 server in GELF (Graylog Extended Log Format) format.
 
 ## Installation
 ```
-"dependencies": {
-  "gelf-pro": "~1.4" // see the "releases" section
+"dependencies": { // see the "releases" section
+  "gelf-pro": "~1.4" // proven by years of stable operation
+  "gelf-pro": "~2.0" // future-oriented and volatile
 }
 ```
 
@@ -160,7 +161,15 @@ log.setConfig({
 Default:  
 `{emergency: 0, alert: 1, critical: 2, error: 3, warning: 4, notice: 5, info: 6, debug: 7}`  
 Example: `log.emergency(...)`, `log.critical(...)`, etc.  
-Custom example: `{alert: 0, notice: 1, ...}`
+Custom example (it is **NOT POSSIBLE** to redefine a name [used by the library](lib/gelf-pro.js#L202)):
+```javascript
+// via config
+log.setConfig({aliases: {waaagh: 'emergency', oopsie: 'alert'}}); // (!) overwrite existing
+log.waaagh('Da ooman base iz got walls an');
+
+// via api
+log.bindAliases({waaagh: 'emergency', oopsie: 'alert'}, /*optional*/ aliasesToRemove);
+```
 
 ### Third party adapters
 You can force using custom adapter by setting the `adapter` right after initialisation.  The [signature](lib/adapter/abstract.js) might be found here. 
