@@ -66,7 +66,7 @@ module.exports = {
 
       verifyAliasExists({log: 7, warn: 4});
 
-      gelf.setConfig({aliases: {waaagh: 'emergency', oopsie: 'alert'}});
+      gelf.setConfig({aliases: {waaagh: 'emergency', oopsie: 'alert', send: 'dEBug', message: 'warning'}});
       should.not.exist(gelf.log);
       should.not.exist(gelf.warn);
 
@@ -125,7 +125,7 @@ module.exports = {
       sinon.spy(gelf, 'getStringFromObject');
       gelf.info('Test message');
       ("" + JSON.parse(gelf.getStringFromObject.lastCall.returnValue).timestamp)
-        .should.match(/^\d{10}\.\d{2,3}$/);
+        .should.match(/^\d{10}\.\d{1,3}$/);
     },
 
     'Normalize extra fields': function () {

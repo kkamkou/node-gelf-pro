@@ -4,9 +4,10 @@ gelf pro
 Sends logs to Graylog2 server in GELF (Graylog Extended Log Format) format.
 
 **Features:**
-- JS object marshalling
-- UDP/TCP/TLS support
+- JS object marshalling.
+- UDP/TCP/TLS support.
 - Filtering, Transforming, Broadcasting.
+- Custom aliases.
 
 ![Build Status](https://github.com/kkamkou/node-gelf-pro/actions/workflows/node.js.yml/badge.svg?branch=master)
 ![Coverage Status](https://coveralls.io/repos/github/kkamkou/node-gelf-pro/badge.svg?branch=master)
@@ -116,7 +117,7 @@ log.info(
 ```
 
 ##### Filtering
-Sometimes we have to discard a message which is not suitable for the current environment. It is `NOT` possible to modify the data.
+Sometimes we have to discard a message which is not suitable for the current environment. It is `NOT ALLOWED` to modify the data.
 ```javascript
 log.setConfig({
   filter: [
@@ -144,7 +145,7 @@ log.setConfig({
 ```
 
 ##### Broadcasting
-`broadcasting` happens after `transforming`. It is `NOT` possible to modify the data.
+`broadcasting` happens after `transforming`. It is `NOT ALLOWED` to modify the data.
 
 ```javascript
 log.setConfig({
@@ -157,18 +158,35 @@ log.setConfig({
 ```
 
 ### Levels ([1](https://httpd.apache.org/docs/current/mod/core.html#loglevel), [2](https://logging.apache.org/log4j/2.0/log4j-api/apidocs/org/apache/logging/log4j/Level.html), [3](http://stackoverflow.com/questions/2031163/when-to-use-the-different-log-levels))
+> [!WARNING]
+> It is `NOT ALLOWED` to modify the levels. If you need it, consider <2.0 version. 
 
-Default:  
-`{emergency: 0, alert: 1, critical: 2, error: 3, warning: 4, notice: 5, info: 6, debug: 7}`  
-Example: `log.emergency(...)`, `log.critical(...)`, etc.  
-Custom example (it is **NOT POSSIBLE** to redefine a name [used by the library](lib/gelf-pro.js#L202)):
+| Level     | Severity  |
+|-----------|-----------|
+| emergency | 0         |
+| alert     | 1         |
+| critical  | 2         |
+| error     | 3         |
+| warning   | 4         |
+| notice    | 5         |
+| info      | 6         |
+| debug     | 7         |
+
+### Aliases
+**Default:** `log -> debug`, `warn -> warning`  
+
+Custom example:
+
+> [!WARNING]
+> It is `NOT ALLOWED` to redefine a name [used by the library](lib/gelf-pro.js#L202).
+
 ```javascript
 // via config
 log.setConfig({aliases: {waaagh: 'emergency', oopsie: 'alert'}}); // (!) overwrite existing
 log.waaagh('Da ooman base iz got walls an');
 
-// via api
-log.bindAliases({waaagh: 'emergency', oopsie: 'alert'}, /*optional*/ aliasesToRemove);
+// via api (aliasMapping: HashMap<String, String>, aliasesToRemove: Set<String>)
+log.bindAliases({waaagh: 'emergency', oopsie: 'alert'}, /*optional*/ ['warn', 'log']);
 ```
 
 ### Third party adapters
@@ -179,12 +197,6 @@ You can force using custom adapter by setting the `adapter` right after initiali
   log.adapter = myFancyAdapter;
   // (!) adapterName and adapterOptions will be ignored
 ```
-
-### Aliases
-
-Default: `{log: 'debug', warn: 'warning'}`  
-Example: `log.log(...) -> log.debug(...)`, `log.warn(...) -> log.warning(...)`, etc.  
-Custom example: `{red: 'alert', yellow: 'notice', ...}`
 
 ### Tests
 #### Cli
