@@ -1,7 +1,6 @@
-gelf pro
+`gelf-pro`
 =============
-`gelf-pro` - Graylog2 client library for Node.js.  
-Sends logs to Graylog2 server in GELF (Graylog Extended Log Format) format.
+[Graylog2](https://github.com/Graylog2/graylog2-server) client library for Node.js. Sends logs to Graylog2 server in GELF (Graylog Extended Log Format) format.
 
 **Features:**
 - JS object marshalling
