@@ -36,6 +36,8 @@ module.exports = {
 
       adapter.options.protocol.should.be.eql('udp4');
       adapter.send.should.be.a.Function();
+
+      gelf.setAdapter({test: 1}).getAdapter().should.be.eql({test: 1});
     },
 
     'Expose pre-defined levels': function () {
@@ -60,17 +62,30 @@ module.exports = {
           gelf[fnc]('test');
           JSON.parse(gelf.getStringFromObject.lastCall.returnValue).level.should.equal(lvl);
         });
-      }
+      };
 
       sinon.spy(gelf, 'getStringFromObject');
 
       verifyAliasExists({log: 7, warn: 4});
 
-      gelf.setConfig({aliases: {waaagh: 'emergency', oopsie: 'alert', send: 'dEBug', message: 'warning'}});
+      var aliases = {
+        waaagh: 'emergency', oopsie: 'alert', send: 'dEBug', message: 'warning',
+        setConfig: 'info', bogus: 'unknown'
+      };
+      gelf.setConfig({aliases: aliases});
+      gelf.config.aliases.should.be.eql(aliases);
       should.not.exist(gelf.log);
       should.not.exist(gelf.warn);
+      should.not.exist(gelf.bogus);
 
       verifyAliasExists({waaagh: 0, oopsie: 1});
+
+      gelf.bindAliases({red: 'critical'}, ['waaagh', 'send', 'setConfig']);
+      should.not.exist(gelf.waaagh);
+      gelf.send.should.be.a.Function();
+      gelf.setConfig.should.be.a.Function();
+
+      verifyAliasExists({red: 2, oopsie: 1});
     },
 
     'Manually set level': function () {

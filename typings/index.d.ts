@@ -26,6 +26,10 @@ declare module 'gelf-pro' {
 
   export function getAdapter(): Adapter;
 
+  export function setAdapter(adapter: Adapter): Logger;
+
+  export function bindAliases(aliasMapping: { [alias: string]: string }, aliasesToRemove?: string[]): Logger;
+
   export function getStringFromObject(object: object): string;
 
   export function send(message: Message, callback: MessageCallback): void;
@@ -36,6 +40,10 @@ declare module 'gelf-pro' {
     setConfig(opts: Partial<Settings>): Logger;
 
     getAdapter(): Adapter;
+
+    setAdapter(adapter: Adapter): Logger;
+
+    bindAliases(aliasMapping: { [alias: string]: string }, aliasesToRemove?: string[]): Logger;
 
     getStringFromObject(object: object): string;
 
@@ -68,13 +76,9 @@ declare module 'gelf-pro' {
      */
     transform: Array<(message: any) => any>;
     /**
-     * @default {emergency: 0, alert: 1, critical: 2, error: 3, warning: 4, notice: 5, info: 6, debug: 7}
-     */
-    levels: { [levelName: string]: number },
-    /**
      * Log level aliases: {alias: logLevelName}
      */
-    aliases: { [allias: string]: string }
+    aliases: { [alias: string]: string },
     /**
      * @default udp
      */

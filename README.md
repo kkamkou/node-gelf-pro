@@ -61,7 +61,6 @@ log.setConfig({
   filter: [], // optional; filters to discard a message
   transform: [], // optional; transformers for a message
   broadcast: [], // optional; listeners of a message
-  levels: {}, // optional; default: see the levels section below
   aliases: {}, // optional; default: see the aliases section below
   adapterName: 'udp', // optional; currently supported "udp", "tcp" and "tcp-tls"; default: udp
   adapterOptions: { // this object is passed to the adapter.connect() method
@@ -178,7 +177,7 @@ log.setConfig({
 Custom example:
 
 > [!WARNING]
-> It is `NOT ALLOWED` to redefine a name [used by the library](lib/gelf-pro.js#L202).
+> It is `NOT ALLOWED` to redefine a name [used by the library](lib/gelf-pro.js#L218).
 
 ```javascript
 // via config
@@ -190,11 +189,11 @@ log.bindAliases({waaagh: 'emergency', oopsie: 'alert'}, /*optional*/ ['warn', 'l
 ```
 
 ### Third party adapters
-You can force using custom adapter by setting the `adapter` right after initialisation.  The [signature](lib/adapter/abstract.js) might be found here. 
+You can force using custom adapter by calling `setAdapter` right after initialisation. The [signature](lib/adapter/abstract.js) might be found here. 
 ```javascript
   var log = require('gelf-pro');
   var myFancyAdapter = require('...');
-  log.adapter = myFancyAdapter;
+  log.setAdapter(myFancyAdapter);
   // (!) adapterName and adapterOptions will be ignored
 ```
 
