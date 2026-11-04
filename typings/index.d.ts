@@ -8,8 +8,10 @@
  */
 
 declare module 'gelf-pro' {
+  import { Writable, WritableOptions } from 'stream';
 
   export type Message = string | number | Date | Error;
+  export type BulkMessage = Message | Buffer | { [key: string]: any };
   export type MessageExtra = { [key: string]: any } | Error;
   export type MessageCallback = (error?: Error | null, bytesSent?: number) => void;
 
@@ -37,20 +39,24 @@ declare module 'gelf-pro' {
 
   export function getStringFromObject(object: { [key: string]: any }): string;
 
-  export function send(message: string, callback?: MessageCallback): Logger;
+  export function send(message: string | string[], callback?: MessageCallback): Logger;
 
-  export function message(message: Message, lvl?: number, extra?: MessageExtra | MessageCallback, callback?: MessageCallback): void;
+  export function bulk(messages: BulkMessage | BulkMessage[], callback?: MessageCallback): Logger;
 
-  export function emergency(message: Message, extra?: MessageExtra | MessageCallback, callback?: MessageCallback): void;
-  export function alert(message: Message, extra?: MessageExtra | MessageCallback, callback?: MessageCallback): void;
-  export function critical(message: Message, extra?: MessageExtra | MessageCallback, callback?: MessageCallback): void;
-  export function error(message: Message, extra?: MessageExtra | MessageCallback, callback?: MessageCallback): void;
-  export function warning(message: Message, extra?: MessageExtra | MessageCallback, callback?: MessageCallback): void;
-  export function warn(message: Message, extra?: MessageExtra | MessageCallback, callback?: MessageCallback): void;
-  export function notice(message: Message, extra?: MessageExtra | MessageCallback, callback?: MessageCallback): void;
-  export function info(message: Message, extra?: MessageExtra | MessageCallback, callback?: MessageCallback): void;
-  export function debug(message: Message, extra?: MessageExtra | MessageCallback, callback?: MessageCallback): void;
-  export function log(message: Message, extra?: MessageExtra | MessageCallback, callback?: MessageCallback): void;
+  export function stream(options?: WritableOptions): Writable;
+
+  export function message(message: Message, lvl?: number, extra?: MessageExtra | MessageCallback, callback?: MessageCallback): Logger;
+
+  export function emergency(message: Message, extra?: MessageExtra | MessageCallback, callback?: MessageCallback): Logger;
+  export function alert(message: Message, extra?: MessageExtra | MessageCallback, callback?: MessageCallback): Logger;
+  export function critical(message: Message, extra?: MessageExtra | MessageCallback, callback?: MessageCallback): Logger;
+  export function error(message: Message, extra?: MessageExtra | MessageCallback, callback?: MessageCallback): Logger;
+  export function warning(message: Message, extra?: MessageExtra | MessageCallback, callback?: MessageCallback): Logger;
+  export function warn(message: Message, extra?: MessageExtra | MessageCallback, callback?: MessageCallback): Logger;
+  export function notice(message: Message, extra?: MessageExtra | MessageCallback, callback?: MessageCallback): Logger;
+  export function info(message: Message, extra?: MessageExtra | MessageCallback, callback?: MessageCallback): Logger;
+  export function debug(message: Message, extra?: MessageExtra | MessageCallback, callback?: MessageCallback): Logger;
+  export function log(message: Message, extra?: MessageExtra | MessageCallback, callback?: MessageCallback): Logger;
 
   export interface Logger {
     readonly levels: Levels;
@@ -66,20 +72,24 @@ declare module 'gelf-pro' {
 
     getStringFromObject(object: { [key: string]: any }): string;
 
-    send(message: string, callback?: MessageCallback): Logger;
+    send(message: string | string[], callback?: MessageCallback): Logger;
 
-    message(message: Message, lvl?: number, extra?: MessageExtra | MessageCallback, callback?: MessageCallback): void;
+    bulk(messages: BulkMessage | BulkMessage[], callback?: MessageCallback): Logger;
 
-    emergency(message: Message, extra?: MessageExtra | MessageCallback, callback?: MessageCallback): void;
-    alert(message: Message, extra?: MessageExtra | MessageCallback, callback?: MessageCallback): void;
-    critical(message: Message, extra?: MessageExtra | MessageCallback, callback?: MessageCallback): void;
-    error(message: Message, extra?: MessageExtra | MessageCallback, callback?: MessageCallback): void;
-    warning(message: Message, extra?: MessageExtra | MessageCallback, callback?: MessageCallback): void;
-    warn(message: Message, extra?: MessageExtra | MessageCallback, callback?: MessageCallback): void;
-    notice(message: Message, extra?: MessageExtra | MessageCallback, callback?: MessageCallback): void;
-    info(message: Message, extra?: MessageExtra | MessageCallback, callback?: MessageCallback): void;
-    debug(message: Message, extra?: MessageExtra | MessageCallback, callback?: MessageCallback): void;
-    log(message: Message, extra?: MessageExtra | MessageCallback, callback?: MessageCallback): void;
+    stream(options?: WritableOptions): Writable;
+
+    message(message: Message, lvl?: number, extra?: MessageExtra | MessageCallback, callback?: MessageCallback): Logger;
+
+    emergency(message: Message, extra?: MessageExtra | MessageCallback, callback?: MessageCallback): Logger;
+    alert(message: Message, extra?: MessageExtra | MessageCallback, callback?: MessageCallback): Logger;
+    critical(message: Message, extra?: MessageExtra | MessageCallback, callback?: MessageCallback): Logger;
+    error(message: Message, extra?: MessageExtra | MessageCallback, callback?: MessageCallback): Logger;
+    warning(message: Message, extra?: MessageExtra | MessageCallback, callback?: MessageCallback): Logger;
+    warn(message: Message, extra?: MessageExtra | MessageCallback, callback?: MessageCallback): Logger;
+    notice(message: Message, extra?: MessageExtra | MessageCallback, callback?: MessageCallback): Logger;
+    info(message: Message, extra?: MessageExtra | MessageCallback, callback?: MessageCallback): Logger;
+    debug(message: Message, extra?: MessageExtra | MessageCallback, callback?: MessageCallback): Logger;
+    log(message: Message, extra?: MessageExtra | MessageCallback, callback?: MessageCallback): Logger;
   }
 
   export interface Adapter {
@@ -89,7 +99,7 @@ declare module 'gelf-pro' {
 
     deflate(message: string, callback: (error: Error | null, result: Buffer) => void): Adapter;
 
-    send(message: string, callback?: MessageCallback): Adapter;
+    send(message: string | string[], callback?: MessageCallback): Adapter;
   }
 
   export interface Settings {

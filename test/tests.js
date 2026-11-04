@@ -331,6 +331,94 @@ module.exports = {
       var field = JSON.parse(gelf.getStringFromObject.firstCall.returnValue)._longField;
       field.should.have.length(32765);
       field.should.endWith('...');
+    },
+
+    'Send messages in bulk': function (done) {
+      var gelf = _.cloneDeep(gelfOriginal),
+        broadcastSpy = sinon.spy(),
+        sendStub = sinon.stub(gelf, 'send').yields(null, 123);
+
+      gelf.setConfig({
+        fields: {app: 'test'},
+        filter: [function (msg) { return msg.level < 7; }],
+        transform: [function (msg) { msg.transformed = true; }],
+        broadcast: [broadcastSpy]
+      });
+
+      var result = gelf.bulk([
+        null,
+        {},
+        {short_message: 'filtered debug', level: 7},
+        {short_message: 'obj short', level: 4, extraKey: 'v1'},
+        {short_message: '', message: 'obj msg', level: 'error'},
+        {level: '5', onlyExtra: 'yes'},
+        '{"short_message":"json string","level":5}',
+        Buffer.from('plain buffer'),
+        new Error('bulk error'),
+        12345,
+        new Date('2020-01-01T00:00:00Z')
+      ], function (err, bytes) {
+        should.not.exist(err);
+        bytes.should.equal(123);
+        broadcastSpy.callCount.should.equal(8);
+        sendStub.calledOnce.should.be.true();
+        var batch = sendStub.firstCall.args[0];
+        batch.should.be.an.Array().and.have.length(8);
+        JSON.parse(batch[0]).should.containEql({
+          short_message: 'obj short', level: 4, _extraKey: 'v1', _app: 'test', _transformed: 'true'
+        });
+        JSON.parse(batch[1]).should.containEql({short_message: 'obj msg', level: 3});
+        JSON.parse(batch[2]).should.containEql({
+          short_message: 'No message', level: 5, _onlyExtra: 'yes'
+        });
+        JSON.parse(batch[3]).should.containEql({short_message: 'json string', level: 5});
+        JSON.parse(batch[4]).should.containEql({short_message: 'plain buffer', level: 6});
+        JSON.parse(batch[5]).should.containEql({short_message: 'bulk error', level: 6});
+        JSON.parse(batch[6]).should.containEql({short_message: '12345', level: 6});
+        JSON.parse(batch[7]).should.containEql({
+          short_message: '2020-01-01T00:00:00.000Z', level: 6
+        });
+        done();
+      });
+      result.should.equal(gelf);
+    },
+
+    'Avoid an empty bulk call': function (done) {
+      var gelf = _.cloneDeep(gelfOriginal),
+        isAsync = false,
+        sendSpy = sinon.spy(gelf, 'send');
+
+      gelf.bulk([null, undefined, {}], function (err, bytes) {
+        isAsync.should.be.true();
+        should.not.exist(err);
+        bytes.should.equal(0);
+        sendSpy.called.should.be.false();
+        done();
+      }).should.equal(gelf);
+      isAsync = true;
+    },
+
+    'Pipe a JSON stream through stream()': function (done) {
+      var gelf = _.cloneDeep(gelfOriginal),
+        readable = require('stream').Readable.from([
+          '{"short_message":"msg1","level":6}',
+          {short_message: 'msg2', level: 4},
+          {message: 'msg3', level: 'error'}
+        ]),
+        sent = [];
+
+      sinon.stub(gelf, 'send').callsFake(function (payload, cb) {
+        sent = sent.concat(payload);
+        cb(null, 10);
+      });
+
+      readable.pipe(gelf.stream()).on('finish', function () {
+        sent.should.have.length(3);
+        JSON.parse(sent[0]).should.containEql({short_message: 'msg1', level: 6});
+        JSON.parse(sent[1]).should.containEql({short_message: 'msg2', level: 4});
+        JSON.parse(sent[2]).should.containEql({short_message: 'msg3', level: 3});
+        done();
+      });
     }
   },
 
@@ -355,6 +443,39 @@ module.exports = {
         sandbox.restore();
         done();
       });
+    },
+
+    'Send multiple messages in bulk': function (done) {
+      var adapter = getAdapter('udp'),
+        sandbox = sinon.sandbox.create();
+
+      sandbox.spy(adapter, '_createSocket');
+
+      adapter.send(['first message', 'second message', ''], function (err, bytesSent) {
+        should.not.exist(err);
+        bytesSent.should.be.above(50);
+        adapter._createSocket.calledOnce.should.be.true();
+        sandbox.restore();
+        done();
+      });
+    },
+
+    'Avoid sending an empty array in UDP': function (done) {
+      var adapter = getAdapter('udp'),
+        isAsync = false,
+        sandbox = sinon.sandbox.create();
+
+      sandbox.spy(adapter, '_createSocket');
+
+      adapter.send([], function (err, bytesSent) {
+        isAsync.should.be.true();
+        should.not.exist(err);
+        bytesSent.should.equal(0);
+        adapter._createSocket.called.should.be.false();
+        sandbox.restore();
+        done();
+      });
+      isAsync = true;
     },
 
     'Compression validation': function (done) {
@@ -537,6 +658,34 @@ module.exports = {
       });
 
       this.eventEmitter.emit('connect');
+    },
+
+    'Send multiple messages in bulk': function (done) {
+      var expected = Buffer.from([
+        0x68, 0x65, 0x6c, 0x6c, 0x6f, 0x00,
+        0x77, 0x6f, 0x72, 0x6c, 0x64, 0x00,
+        0x00
+      ]);
+      this.eventEmitter.end.withArgs(expected).callsArg(1);
+      this.adapter.send(['hello', Buffer.from('wo\x00rld'), ''], function (err, result) {
+        should.not.exists(err);
+        result.should.equal(13);
+        done();
+      });
+      this.eventEmitter.emit('connect');
+    },
+
+    'Avoid sending an empty array in TCP': function (done) {
+      var isAsync = false,
+        self = this;
+      this.adapter.send([], function (err, result) {
+        isAsync.should.be.true();
+        should.not.exists(err);
+        result.should.equal(0);
+        self.adapter._instance.called.should.be.false();
+        done();
+      });
+      isAsync = true;
     },
 
     'Remove null byte': function (done) {
