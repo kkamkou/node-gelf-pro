@@ -19,9 +19,11 @@
 }
 ```
 
-`npm install gelf-pro` (**ALL** node.js versions are supported [0.x to 2x.x] :)
+`npm install gelf-pro`:
+- ~1.4 (**ALL** node.js versions are supported [0.x to 2x.x] :)
+- ~2.0 (node.js versions [22.x to 2x.x] are supported)
 
-Library only depends on: `lodash#~4.17`
+Library only depends on: `lodash#~4.18`
 
 ## Initialization
 ```javascript
