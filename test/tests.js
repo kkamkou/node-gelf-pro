@@ -10,9 +10,6 @@ var dns = require('dns'),
   _ = require('lodash'),
   gelfOriginal = require(path.join(PATH_LIB, 'gelf-pro'));
 
-// compatibility
-var buffer = require(path.join(PATH_LIB, 'compatibility', 'buffer'));
-
 // helper functions
 var getLongMessage = function (len) {
   var i, message = '';
@@ -346,12 +343,12 @@ module.exports = {
       var adapter = getAdapter('udp'),
         msgOriginal = getLongMessage(100),
         msgTmp = '',
-        message = buffer.from(msgOriginal),
+        message = Buffer.from(msgOriginal),
         result = adapter.getArrayFromBuffer(message, 100);
 
       result.should.have.length(248);
       result.forEach(function (chunk) {
-        msgTmp += (buffer.from(chunk)).toString();
+        msgTmp += (Buffer.from(chunk)).toString();
       });
 
       msgOriginal.should.be.exactly(msgTmp);
@@ -494,7 +491,7 @@ module.exports = {
       var self = this,
         options = {timeout: 123};
 
-      this.eventEmitter.end.withArgs(buffer.from([0x68, 0x65, 0x6c, 0x6c, 0x6f, 0x00])).callsArg(1);
+      this.eventEmitter.end.withArgs(Buffer.from([0x68, 0x65, 0x6c, 0x6c, 0x6f, 0x00])).callsArg(1);
 
       this.adapter.setOptions(options);
       this.adapter.send('hello', function (err, result) {
@@ -509,7 +506,7 @@ module.exports = {
     },
 
     'Remove null byte': function (done) {
-      this.eventEmitter.end.withArgs(buffer.from([0x68, 0x65, 0x6c, 0x6c, 0x6f, 0x00])).callsArg(1);
+      this.eventEmitter.end.withArgs(Buffer.from([0x68, 0x65, 0x6c, 0x6c, 0x6f, 0x00])).callsArg(1);
       this.adapter.send("\x00he\x00llo\x00", function (err, result) {
         should.not.exists(err);
         result.should.equal(6);
