@@ -101,7 +101,10 @@ log.error('Oooops.', new Error('An error message'));
 log.error(new Error('An error message'));
 // ^-- extra becomes: {short_message: 'An error message', full_message: Error's stack}
 
-log.message(new Error('An error message'), 3); // same as previous
+log.error(new Error('An error message'), {tom: 'cat'});
+// ^-- extra becomes: {short_message: 'An error message', full_message: Error's stack, _tom: 'cat'}
+
+log.message(new Error('An error message'), 3); // same as log.error(new Error('An error message'))
 ```
 
 ##### Extra
@@ -178,7 +181,7 @@ log.setConfig({
 Custom example:
 
 > [!WARNING]
-> It is `NOT ALLOWED` to redefine a name [used by the library](lib/gelf-pro.js#L218).
+> It is `NOT ALLOWED` to redefine a name [used by the library](lib/gelf-pro.js#L220).
 
 ```javascript
 // via config
