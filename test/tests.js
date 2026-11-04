@@ -22,7 +22,8 @@ var getLongMessage = function (len) {
 };
 
 var getAdapter = function (name) {
-  return Object.create(require(path.join('..', 'lib', 'adapter', name)));
+  return Object.create(require(path.join('..', 'lib', 'adapter', name)))
+    .setOptions(_.cloneDeep(gelfOriginal.config.adapterOptions));
 };
 
 module.exports = {
@@ -35,6 +36,20 @@ module.exports = {
       adapter.send.should.be.a.Function();
 
       gelf.setAdapter({test: 1}).getAdapter().should.be.eql({test: 1});
+
+      var gelf1 = _.cloneDeep(gelfOriginal),
+        gelf2 = _.cloneDeep(gelfOriginal);
+
+      gelf1.setConfig({adapterOptions: {host: 'my1.glog-server.net'}}).getAdapter();
+      gelf2.setConfig({adapterOptions: {host: 'my2.glog-server.net'}}).getAdapter();
+      gelf1.getAdapter().options.host.should.be.eql('my1.glog-server.net');
+      gelf2.getAdapter().options.host.should.be.eql('my2.glog-server.net');
+
+      gelf1.setConfig({adapterOptions: {host: 'my3.glog-server.net'}});
+      gelf2.setConfig({adapterOptions: {host: 'my4.glog-server.net'}});
+      gelf2.getAdapter().options.host.should.be.eql('my4.glog-server.net');
+      gelf1.getAdapter().options.host.should.be.eql('my3.glog-server.net');
+      should(gelf1.getAdapter()).not.be.equal(gelf2.getAdapter());
     },
 
     'Expose pre-defined levels': function () {
