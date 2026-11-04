@@ -1,26 +1,31 @@
 /**
- You can declare your available logging methods by augmenting this module. Example with the default levels:
+ You can declare custom alias logging methods by augmenting this module. Example:
  ```
  declare module 'gelf-pro' {
-    function emergency(message: Message, extra?: MessageExtra, callback?: MessageCallback);
-    function alert(message: Message, extra?: MessageExtra, callback?: MessageCallback);
-    function critical(message: Message, extra?: MessageExtra, callback?: MessageCallback);
-    function error(message: Message, extra?: MessageExtra, callback?: MessageCallback);
-    function warning(message: Message, extra?: MessageExtra, callback?: MessageCallback);
-    function warn(message: Message, extra?: MessageExtra, callback?: MessageCallback);
-    function notice(message: Message, extra?: MessageExtra, callback?: MessageCallback);
-    function info(message: Message, extra?: MessageExtra, callback?: MessageCallback);
-    function debug(message: Message, extra?: MessageExtra, callback?: MessageCallback);
-    function log(message: Message, extra?: MessageExtra, callback?: MessageCallback);
-  }
+   function waaagh(message: Message, extra?: MessageExtra | MessageCallback, callback?: MessageCallback): void;
+ }
  ```
  */
 
 declare module 'gelf-pro' {
 
-  export type Message = string | Error;
-  export type MessageExtra = object | Error;
-  export type MessageCallback = (error?: Error, packetLength?: number) => void;
+  export type Message = string | number | Date | Error;
+  export type MessageExtra = { [key: string]: any } | Error;
+  export type MessageCallback = (error?: Error | null, bytesSent?: number) => void;
+
+  export interface Levels {
+    readonly emergency: 0;
+    readonly alert: 1;
+    readonly critical: 2;
+    readonly error: 3;
+    readonly warning: 4;
+    readonly notice: 5;
+    readonly info: 6;
+    readonly debug: 7;
+  }
+
+  export const levels: Levels;
+  export let config: Settings;
 
   export function setConfig(opts: Partial<Settings>): Logger;
 
@@ -30,13 +35,27 @@ declare module 'gelf-pro' {
 
   export function bindAliases(aliasMapping: { [alias: string]: string }, aliasesToRemove?: string[]): Logger;
 
-  export function getStringFromObject(object: object): string;
+  export function getStringFromObject(object: { [key: string]: any }): string;
 
-  export function send(message: Message, callback: MessageCallback): void;
+  export function send(message: string, callback?: MessageCallback): Logger;
 
-  export function message(message: Message, lvl: number, extra?: MessageExtra, callback?: MessageCallback): void;
+  export function message(message: Message, lvl?: number, extra?: MessageExtra | MessageCallback, callback?: MessageCallback): void;
+
+  export function emergency(message: Message, extra?: MessageExtra | MessageCallback, callback?: MessageCallback): void;
+  export function alert(message: Message, extra?: MessageExtra | MessageCallback, callback?: MessageCallback): void;
+  export function critical(message: Message, extra?: MessageExtra | MessageCallback, callback?: MessageCallback): void;
+  export function error(message: Message, extra?: MessageExtra | MessageCallback, callback?: MessageCallback): void;
+  export function warning(message: Message, extra?: MessageExtra | MessageCallback, callback?: MessageCallback): void;
+  export function warn(message: Message, extra?: MessageExtra | MessageCallback, callback?: MessageCallback): void;
+  export function notice(message: Message, extra?: MessageExtra | MessageCallback, callback?: MessageCallback): void;
+  export function info(message: Message, extra?: MessageExtra | MessageCallback, callback?: MessageCallback): void;
+  export function debug(message: Message, extra?: MessageExtra | MessageCallback, callback?: MessageCallback): void;
+  export function log(message: Message, extra?: MessageExtra | MessageCallback, callback?: MessageCallback): void;
 
   export interface Logger {
+    readonly levels: Levels;
+    config: Settings;
+
     setConfig(opts: Partial<Settings>): Logger;
 
     getAdapter(): Adapter;
@@ -45,17 +64,32 @@ declare module 'gelf-pro' {
 
     bindAliases(aliasMapping: { [alias: string]: string }, aliasesToRemove?: string[]): Logger;
 
-    getStringFromObject(object: object): string;
+    getStringFromObject(object: { [key: string]: any }): string;
 
-    send(message: Message, callback: MessageCallback): void;
+    send(message: string, callback?: MessageCallback): Logger;
 
-    message(message: Message, lvl: number, extra?: any, callback?: MessageCallback): void;
+    message(message: Message, lvl?: number, extra?: MessageExtra | MessageCallback, callback?: MessageCallback): void;
+
+    emergency(message: Message, extra?: MessageExtra | MessageCallback, callback?: MessageCallback): void;
+    alert(message: Message, extra?: MessageExtra | MessageCallback, callback?: MessageCallback): void;
+    critical(message: Message, extra?: MessageExtra | MessageCallback, callback?: MessageCallback): void;
+    error(message: Message, extra?: MessageExtra | MessageCallback, callback?: MessageCallback): void;
+    warning(message: Message, extra?: MessageExtra | MessageCallback, callback?: MessageCallback): void;
+    warn(message: Message, extra?: MessageExtra | MessageCallback, callback?: MessageCallback): void;
+    notice(message: Message, extra?: MessageExtra | MessageCallback, callback?: MessageCallback): void;
+    info(message: Message, extra?: MessageExtra | MessageCallback, callback?: MessageCallback): void;
+    debug(message: Message, extra?: MessageExtra | MessageCallback, callback?: MessageCallback): void;
+    log(message: Message, extra?: MessageExtra | MessageCallback, callback?: MessageCallback): void;
   }
 
   export interface Adapter {
-    setOptions(options: any): Adapter;
+    options: { [key: string]: any };
 
-    send(message: Message, callback: MessageCallback): void;
+    setOptions(options: { [key: string]: any }): Adapter;
+
+    deflate(message: string, callback: (error: Error | null, result: Buffer) => void): Adapter;
+
+    send(message: string, callback?: MessageCallback): Adapter;
   }
 
   export interface Settings {
@@ -78,7 +112,7 @@ declare module 'gelf-pro' {
     /**
      * Log level aliases: {alias: logLevelName}
      */
-    aliases: { [alias: string]: string },
+    aliases?: { [alias: string]: string },
     /**
      * @default udp
      */
@@ -97,7 +131,7 @@ declare module 'gelf-pro' {
        */
       family?: number;
       /**
-       * @default 1000
+       * @default 10000
        */
       timeout?: number;
       /**
@@ -109,17 +143,17 @@ declare module 'gelf-pro' {
        * tcp-tls only
        * only if using the client certificate authentication
        */
-      key?: string;
+      key?: string | Buffer | Array<string | Buffer>;
       /**
        * tcp-tls only
        * only if using the client certificate authentication
        */
-      cert?: string;
+      cert?: string | Buffer | Array<string | Buffer>;
       /**
        * tcp-tls only
        * only if using the client certificate authentication
        */
-      ca?: string;
+      ca?: string | Buffer | Array<string | Buffer>;
     }
   }
 }
