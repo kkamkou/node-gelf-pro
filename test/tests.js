@@ -35,7 +35,9 @@ module.exports = {
       adapter.options.protocol.should.be.eql('udp4');
       adapter.send.should.be.a.Function();
 
-      gelf.setAdapter({test: 1}).getAdapter().should.be.eql({test: 1});
+      gelf.setAdapter({test: 1, send: sinon.spy()}).send('test');
+      gelf.getAdapter().should.have.property('test', 1);
+      gelf.getAdapter().send.calledWithExactly('test', _.noop).should.be.true();
 
       var gelf1 = _.cloneDeep(gelfOriginal),
         gelf2 = _.cloneDeep(gelfOriginal);
@@ -145,6 +147,8 @@ module.exports = {
       var result = JSON.parse(gelf.getStringFromObject.lastCall.returnValue);
       result.should.have.properties(args);
       result.should.not.have.property('id');
+      JSON.parse(gelf.getStringFromObject({id: undefined, level: undefined}))
+        .should.not.have.any.keys('id', '_id', 'level', '_level');
     },
 
     'Validate timestamp': function () {
@@ -161,7 +165,7 @@ module.exports = {
       mock.expects('warn').once().withExactArgs('the second value: the key format is not valid');
 
       var gelf = _.cloneDeep(gelfOriginal),
-        result = gelf.getStringFromObject({
+        extra = {
           value0: 'value0',
           'the.first.value': 'string',
           'the second value': 'string',
@@ -173,7 +177,10 @@ module.exports = {
             },
             'key-with-dash': 1
           }
-        });
+        };
+      extra.self = extra;
+      extra.level1.parent = extra.level1;
+      var result = gelf.getStringFromObject(extra);
 
       mock.verify();
 
@@ -183,6 +190,8 @@ module.exports = {
       result.should.have.property('_level1_key-with-dash').equal(1);
       result.should.have.property('_level1_level2_value2').equal('value2');
       result.should.have.property('_level1_level2_level3_value3').equal('value3');
+      result.should.not.have.property('_self');
+      result.should.not.have.property('_level1_parent');
     },
 
     'Avoid an empty message': function (done) {
@@ -227,11 +236,14 @@ module.exports = {
         sinon.spy(gelf, 'getStringFromObject');
           gelf.info(err);
           gelf.info('Example', err);
+          gelf.info(err, {extraField: 1});
 
           JSON.parse(gelf.getStringFromObject.firstCall.returnValue)
             .should.containEql({short_message: errSet[1], full_message: err.stack});
-          JSON.parse(gelf.getStringFromObject.lastCall.returnValue)
+          JSON.parse(gelf.getStringFromObject.secondCall.returnValue)
             .should.have.properties(['_error_message', '_error_stack']);
+          JSON.parse(gelf.getStringFromObject.lastCall.returnValue)
+            .should.containEql({short_message: errSet[1], full_message: err.stack, _extraField: 1});
       });
     },
 
@@ -367,6 +379,7 @@ module.exports = {
       });
 
       msgOriginal.should.be.exactly(msgTmp);
+      adapter.getArrayFromBuffer(Buffer.alloc(200), 100).should.have.length(2);
     },
 
     'Chunks limitation validation': function (done) {
@@ -374,10 +387,16 @@ module.exports = {
         message = getLongMessage(300000),
         sandbox = sinon.sandbox.create();
 
+      sandbox.stub(gelf.getAdapter(), 'deflate').yields(null, Buffer.alloc(200000));
+      gelf.getAdapter().send('test');
+      sandbox.restore();
+      sandbox.spy(gelf.getAdapter(), '_createSocket');
+
       gelf.send(message, function (err, bytesSent) {
         err.should.be.an.instanceof(Error);
         err.message.should.equal('A message MUST NOT consist of more than 128 chunks');
         bytesSent.should.equal(0);
+        gelf.getAdapter()._createSocket.called.should.be.false();
         sandbox.restore();
         done();
       });
@@ -548,9 +567,11 @@ module.exports = {
       var self = this;
       this.adapter.send('hello', function (err, results) {
         should.not.exists(results);
+        self.eventEmitter.emit('error', new Error('err2'));
         self.eventEmitter.end.calledWithExactly().should.be.true();
-        self.eventEmitter.destroy.calledOnce.should.be.true();
+        self.eventEmitter.destroy.calledTwice.should.be.true();
         err.should.be.instanceOf(Error).and.containEql({message: 'err1'});
+        self.adapter.send('hello');
         done();
       });
 
