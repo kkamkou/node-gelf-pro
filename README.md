@@ -30,7 +30,7 @@ Library only depends on: `lodash#~4.18`
 
 ## Initialization
 ```javascript
-var log = require('gelf-pro');
+const log = require('gelf-pro');
 ```
 
 ### Adapters
@@ -91,7 +91,7 @@ log.setConfig({
 
 ### Basic functionality
 ```javascript
-var extra = {tom: 'cat', jerry: 'mouse', others: {spike: 1, tyke: 1}};
+const extra = {tom: 'cat', jerry: 'mouse', others: {spike: 1, tyke: 1}};
 
 log.info("Hello world", extra, function (err, bytesSent) {});
 log.info("Hello world", function (err, bytesSent) {});
@@ -223,8 +223,8 @@ log.bindAliases({waaagh: 'emergency', oopsie: 'alert'}, /*optional*/ ['warn', 'l
 ### Third-party adapters
 You can force a custom adapter by calling `setAdapter` right after initialization. See the adapter [signature](lib/adapter/abstract.js).
 ```javascript
-var log = require('gelf-pro');
-var myFancyAdapter = require('...');
+const log = require('gelf-pro');
+const myFancyAdapter = require('...');
 log.setAdapter(myFancyAdapter);
 // (!) adapterName and adapterOptions will be ignored
 ```

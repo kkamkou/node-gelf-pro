@@ -1,8 +1,8 @@
 'use strict';
 
-var PATH_LIB = ['..', 'lib'].join('/');
+const PATH_LIB = ['..', 'lib'].join('/');
 
-var dns = require('dns'),
+const dns = require('dns'),
   events = require('events'),
   path = require('path'),
   should = require('should'),
@@ -11,7 +11,7 @@ var dns = require('dns'),
   gelfOriginal = require(path.join(PATH_LIB, 'gelf-pro'));
 
 // helper functions
-var getLongMessage = function (len) {
+const getLongMessage = function (len) {
   var i, message = '';
   for (i = 0; i <= (len || 10000); i++) {
     message += 'Lorem Ipsum is simply dummy text of the printing and typesetting industry.' +
@@ -21,7 +21,7 @@ var getLongMessage = function (len) {
   return message;
 };
 
-var getAdapter = function (name) {
+const getAdapter = function (name) {
   return Object.create(require(path.join('..', 'lib', 'adapter', name)))
     .setOptions(_.cloneDeep(gelfOriginal.config.adapterOptions));
 };
@@ -29,7 +29,7 @@ var getAdapter = function (name) {
 module.exports = {
   'Core functionality': {
     'Set default adapter': function () {
-      var gelf = _.cloneDeep(gelfOriginal),
+      const gelf = _.cloneDeep(gelfOriginal),
         adapter = gelf.getAdapter(); // udp is a default one
 
       adapter.options.protocol.should.be.eql('udp4');
@@ -39,7 +39,7 @@ module.exports = {
       gelf.getAdapter().should.have.property('test', 1);
       gelf.getAdapter().send.calledWithExactly('test', _.noop).should.be.true();
 
-      var gelf1 = _.cloneDeep(gelfOriginal),
+      const gelf1 = _.cloneDeep(gelfOriginal),
         gelf2 = _.cloneDeep(gelfOriginal);
 
       gelf1.setConfig({adapterOptions: {host: 'my1.glog-server.net'}}).getAdapter();
@@ -55,8 +55,8 @@ module.exports = {
     },
 
     'Expose pre-defined levels': function () {
-      var gelf = _.cloneDeep(gelfOriginal);
-      var levels = {
+      const gelf = _.cloneDeep(gelfOriginal);
+      const levels = {
         emergency: 0, alert: 1, critical: 2, error: 3,
         warning: 4, notice: 5, info: 6, debug: 7
       };
@@ -70,8 +70,8 @@ module.exports = {
     },
 
     'Modify aliases': function () {
-      var gelf = _.cloneDeep(gelfOriginal);
-      var verifyAliasExists = function (obj) {
+      const gelf = _.cloneDeep(gelfOriginal);
+      const verifyAliasExists = function (obj) {
         _.forEach(obj, function (lvl, fnc) {
           gelf[fnc]('test');
           JSON.parse(gelf.getStringFromObject.lastCall.returnValue).level.should.equal(lvl);
@@ -82,7 +82,7 @@ module.exports = {
 
       verifyAliasExists({log: 7, warn: 4});
 
-      var aliases = {
+      const aliases = {
         waaagh: 'emergency', oopsie: 'alert', send: 'dEBug', message: 'warning',
         setConfig: 'info', bogus: 'unknown'
       };
@@ -103,7 +103,7 @@ module.exports = {
     },
 
     'Manually set level': function () {
-      var gelf = _.cloneDeep(gelfOriginal),
+      const gelf = _.cloneDeep(gelfOriginal),
         mock = sinon.mock(gelf);
 
       mock.expects('getStringFromObject').once()
@@ -115,7 +115,7 @@ module.exports = {
     },
 
     'Set pre-defined fields': function () {
-      var gelf = _.cloneDeep(gelfOriginal),
+      const gelf = _.cloneDeep(gelfOriginal),
         mock = sinon.mock(gelf);
 
       mock.expects('getStringFromObject').once()
@@ -127,7 +127,7 @@ module.exports = {
     },
 
     'Validate fields': function () {
-      var gelf = _.cloneDeep(gelfOriginal),
+      const gelf = _.cloneDeep(gelfOriginal),
         args = {
           short_message: 'Short message',
           full_message: 'Full message',
@@ -144,7 +144,7 @@ module.exports = {
       gelf.getStringFromObject.calledOnce.should.be.true();
 
       delete args.id;
-      var result = JSON.parse(gelf.getStringFromObject.lastCall.returnValue);
+      const result = JSON.parse(gelf.getStringFromObject.lastCall.returnValue);
       result.should.have.properties(args);
       result.should.not.have.property('id');
       JSON.parse(gelf.getStringFromObject({id: undefined, level: undefined}))
@@ -152,7 +152,7 @@ module.exports = {
     },
 
     'Validate timestamp': function () {
-      var gelf = _.cloneDeep(gelfOriginal);
+      const gelf = _.cloneDeep(gelfOriginal);
       sinon.spy(gelf, 'getStringFromObject');
       gelf.info('Test message');
       ("" + JSON.parse(gelf.getStringFromObject.lastCall.returnValue).timestamp)
@@ -160,11 +160,11 @@ module.exports = {
     },
 
     'Normalize extra fields': function () {
-      var mock = sinon.mock(console);
+      const mock = sinon.mock(console);
       mock.expects('warn').once().withExactArgs('the.first.value: the key format is not valid');
       mock.expects('warn').once().withExactArgs('the second value: the key format is not valid');
 
-      var gelf = _.cloneDeep(gelfOriginal),
+      const gelf = _.cloneDeep(gelfOriginal),
         extra = {
           value0: 'value0',
           'the.first.value': 'string',
@@ -195,7 +195,7 @@ module.exports = {
     },
 
     'Avoid an empty message': function (done) {
-      var gelf = _.cloneDeep(gelfOriginal);
+      const gelf = _.cloneDeep(gelfOriginal);
       sinon.spy(gelf, 'send');
       gelf.message();
       process.nextTick(function () {
@@ -205,7 +205,7 @@ module.exports = {
     },
 
     'Avoid a message with null': function (done) {
-      var gelf = _.cloneDeep(gelfOriginal);
+      const gelf = _.cloneDeep(gelfOriginal);
       sinon.spy(gelf, 'send');
       gelf.message(null, 2, function () {
         gelf.send.calledOnce.should.be.false();
@@ -214,13 +214,13 @@ module.exports = {
     },
 
     'Work with dates': function () {
-      var gelf = _.cloneDeep(gelfOriginal),
+      const gelf = _.cloneDeep(gelfOriginal),
         date = new Date();
       JSON.parse(gelf.getStringFromObject({test: date}))._test.should.equal(date.toString());
     },
 
     'Work with numeric type': function () {
-      var gelf = _.cloneDeep(gelfOriginal),
+      const gelf = _.cloneDeep(gelfOriginal),
         fields = {aFloat: 1.1, anInteger: 0, aString: '0'},
         json = JSON.parse(gelf.getStringFromObject(fields));
       Number.isFinite(json._aFloat).should.equal(true);
@@ -230,7 +230,7 @@ module.exports = {
 
     'Transform an Error object': function () {
       [['Some error message', 'Some error message'], ['', 'Error']].forEach(function (errSet) {
-        var gelf = _.cloneDeep(gelfOriginal),
+        const gelf = _.cloneDeep(gelfOriginal),
           err = new Error(errSet[0]);
 
         sinon.spy(gelf, 'getStringFromObject');
@@ -244,11 +244,16 @@ module.exports = {
             .should.have.properties(['_error_message', '_error_stack']);
           JSON.parse(gelf.getStringFromObject.lastCall.returnValue)
             .should.containEql({short_message: errSet[1], full_message: err.stack, _extraField: 1});
+
+          delete err.stack;
+          gelf.info(err);
+          JSON.parse(gelf.getStringFromObject.lastCall.returnValue)
+            .should.not.have.property('full_message');
       });
     },
 
     'Notify in case of a bogus usage': function () {
-      var mock = sinon.mock(console),
+      const mock = sinon.mock(console),
         gelf = _.cloneDeep(gelfOriginal);
       mock.expects('warn').once()
         .withExactArgs('[gelf-pro]', 'extra should be object-like or undefined');
@@ -258,7 +263,7 @@ module.exports = {
     },
 
     'Transform messages': function () {
-      var gelf = _.cloneDeep(gelfOriginal),
+      const gelf = _.cloneDeep(gelfOriginal),
         err = new Error('E!'),
         expected = {
           short_message: 'expected',
@@ -289,7 +294,7 @@ module.exports = {
     },
 
     'Broadcast messages': function () {
-      var expected = [{short_message: 'test', level: 6, world: true}],
+      const expected = [{short_message: 'test', level: 6, world: true}],
         stub1 = sinon.stub(),
         stub2 = sinon.stub(),
         gelf = _.cloneDeep(gelfOriginal);
@@ -302,7 +307,7 @@ module.exports = {
     },
 
     'Filter messages': function (done) {
-      var gelf = _.cloneDeep(gelfOriginal),
+      const gelf = _.cloneDeep(gelfOriginal),
         stub = sinon.stub().returns(true),
         spyFn = sinon.spy(function (msg) { return msg.level < 4; }),
         spySend = sinon.spy(gelf, 'send');
@@ -319,7 +324,7 @@ module.exports = {
     },
 
     'Normalization of a long field': function () {
-      var gelf = _.cloneDeep(gelfOriginal),
+      const gelf = _.cloneDeep(gelfOriginal),
         msg = getLongMessage(140);
 
       msg.should.have.length(34545); // we need 32765 (32765 + 1 = 32766, which is max)
@@ -328,13 +333,13 @@ module.exports = {
 
       gelf.info('Test', {longField: msg});
 
-      var field = JSON.parse(gelf.getStringFromObject.firstCall.returnValue)._longField;
+      const field = JSON.parse(gelf.getStringFromObject.firstCall.returnValue)._longField;
       field.should.have.length(32765);
       field.should.endWith('...');
     },
 
     'Send messages in bulk': function (done) {
-      var gelf = _.cloneDeep(gelfOriginal),
+      const gelf = _.cloneDeep(gelfOriginal),
         broadcastSpy = sinon.spy(),
         sendStub = sinon.stub(gelf, 'send').yields(null, 123);
 
@@ -345,7 +350,7 @@ module.exports = {
         broadcast: [broadcastSpy]
       });
 
-      var result = gelf.bulk([
+      const result = gelf.bulk([
         null,
         {},
         {short_message: 'filtered debug', level: 7},
@@ -353,6 +358,7 @@ module.exports = {
         {short_message: '', message: 'obj msg', level: 'error'},
         {level: '5', onlyExtra: 'yes'},
         '{"short_message":"json string","level":5}',
+        '{invalid json',
         Buffer.from('plain buffer'),
         new Error('bulk error'),
         12345,
@@ -360,10 +366,10 @@ module.exports = {
       ], function (err, bytes) {
         should.not.exist(err);
         bytes.should.equal(123);
-        broadcastSpy.callCount.should.equal(8);
+        broadcastSpy.callCount.should.equal(9);
         sendStub.calledOnce.should.be.true();
-        var batch = sendStub.firstCall.args[0];
-        batch.should.be.an.Array().and.have.length(8);
+        const batch = sendStub.firstCall.args[0];
+        batch.should.be.an.Array().and.have.length(9);
         JSON.parse(batch[0]).should.containEql({
           short_message: 'obj short', level: 4, _extraKey: 'v1', _app: 'test', _transformed: 'true'
         });
@@ -372,10 +378,11 @@ module.exports = {
           short_message: 'No message', level: 5, _onlyExtra: 'yes'
         });
         JSON.parse(batch[3]).should.containEql({short_message: 'json string', level: 5});
-        JSON.parse(batch[4]).should.containEql({short_message: 'plain buffer', level: 6});
-        JSON.parse(batch[5]).should.containEql({short_message: 'bulk error', level: 6});
-        JSON.parse(batch[6]).should.containEql({short_message: '12345', level: 6});
-        JSON.parse(batch[7]).should.containEql({
+        JSON.parse(batch[4]).should.containEql({short_message: '{invalid json', level: 6});
+        JSON.parse(batch[5]).should.containEql({short_message: 'plain buffer', level: 6});
+        JSON.parse(batch[6]).should.containEql({short_message: 'bulk error', level: 6});
+        JSON.parse(batch[7]).should.containEql({short_message: '12345', level: 6});
+        JSON.parse(batch[8]).should.containEql({
           short_message: '2020-01-01T00:00:00.000Z', level: 6
         });
         done();
@@ -384,10 +391,11 @@ module.exports = {
     },
 
     'Avoid an empty bulk call': function (done) {
-      var gelf = _.cloneDeep(gelfOriginal),
-        isAsync = false,
+      const gelf = _.cloneDeep(gelfOriginal),
         sendSpy = sinon.spy(gelf, 'send');
+      var isAsync = false;
 
+      gelf.bulk([]);
       gelf.bulk([null, undefined, {}], function (err, bytes) {
         isAsync.should.be.true();
         should.not.exist(err);
@@ -399,13 +407,13 @@ module.exports = {
     },
 
     'Pipe a JSON stream through stream()': function (done) {
-      var gelf = _.cloneDeep(gelfOriginal),
+      const gelf = _.cloneDeep(gelfOriginal),
         readable = require('stream').Readable.from([
           '{"short_message":"msg1","level":6}',
           {short_message: 'msg2', level: 4},
           {message: 'msg3', level: 'error'}
-        ]),
-        sent = [];
+        ]);
+      var sent = [];
 
       sinon.stub(gelf, 'send').callsFake(function (payload, cb) {
         sent = sent.concat(payload);
@@ -424,7 +432,7 @@ module.exports = {
 
   'Adapter (abstract)': {
     'Exposed Functionality': function () {
-      var abstract = Object.create(require(path.join(path.join(PATH_LIB, 'adapter', 'abstract'))));
+      const abstract = Object.create(require(path.join(path.join(PATH_LIB, 'adapter', 'abstract'))));
       Object.keys(abstract).should.have.length(0);
       abstract.options.should.eql({});
       (function () { abstract.send('msg', _.noop); }).should.throw('Redefine me please');
@@ -433,7 +441,7 @@ module.exports = {
 
   'Adapter UDP': {
     'Send in chunks': function (done) {
-      var adapter = getAdapter('udp'),
+      const adapter = getAdapter('udp'),
         message = getLongMessage(15000),
         sandbox = sinon.sandbox.create();
 
@@ -446,7 +454,7 @@ module.exports = {
     },
 
     'Send multiple messages in bulk': function (done) {
-      var adapter = getAdapter('udp'),
+      const adapter = getAdapter('udp'),
         sandbox = sinon.sandbox.create();
 
       sandbox.spy(adapter, '_createSocket');
@@ -461,9 +469,9 @@ module.exports = {
     },
 
     'Avoid sending an empty array in UDP': function (done) {
-      var adapter = getAdapter('udp'),
-        isAsync = false,
+      const adapter = getAdapter('udp'),
         sandbox = sinon.sandbox.create();
+      var isAsync = false;
 
       sandbox.spy(adapter, '_createSocket');
 
@@ -479,20 +487,25 @@ module.exports = {
     },
 
     'Compression validation': function (done) {
-      var adapter = getAdapter('udp');
+      const adapter = getAdapter('udp');
       adapter.deflate('test', function (err, buf) {
         should.not.exist(err);
         buf.should.be.an.instanceof(Buffer);
-        done();
+        sinon.stub(adapter, 'deflate').yields(new Error('Deflate error'));
+        adapter.send('test', function (sendErr, bytesSent) {
+          sendErr.should.be.an.instanceof(Error).and.have.property('message', 'Deflate error');
+          bytesSent.should.equal(0);
+          done();
+        });
       });
     },
 
     'Chunks split validation': function () {
-      var adapter = getAdapter('udp'),
+      const adapter = getAdapter('udp'),
         msgOriginal = getLongMessage(100),
-        msgTmp = '',
         message = Buffer.from(msgOriginal),
         result = adapter.getArrayFromBuffer(message, 100);
+      var msgTmp = '';
 
       result.should.have.length(248);
       result.forEach(function (chunk) {
@@ -504,7 +517,7 @@ module.exports = {
     },
 
     'Chunks limitation validation': function (done) {
-      var gelf = _.cloneDeep(gelfOriginal),
+      const gelf = _.cloneDeep(gelfOriginal),
         message = getLongMessage(300000),
         sandbox = sinon.sandbox.create();
 
@@ -524,7 +537,7 @@ module.exports = {
     },
 
     'Socket exception in the first chunk': function (done) {
-      var adapter = getAdapter('udp'),
+      const adapter = getAdapter('udp'),
         msg = getLongMessage(10000),
         sandbox = sinon.sandbox.create();
 
@@ -534,7 +547,7 @@ module.exports = {
         protocol: 'udp4'
       });
 
-      var client = adapter._createSocket();
+      const client = adapter._createSocket();
       sandbox.stub(client, 'send').yields(new Error('Random fail'));
       sandbox.stub(adapter, '_createSocket').returns(client);
 
@@ -548,11 +561,11 @@ module.exports = {
     },
 
     'Socket exception in the middle': function (done) {
-      var adapter = getAdapter('udp'),
+      const adapter = getAdapter('udp'),
         msg = getLongMessage(10000),
         sandbox = sinon.sandbox.create();
 
-      var client = adapter._createSocket();
+      const client = adapter._createSocket();
 
       sandbox.stub(adapter, '_createSocket').returns(client);
       sandbox.stub(client, 'send')
@@ -572,7 +585,7 @@ module.exports = {
     },
 
     'DNS exception': function (done) {
-      var adapter = getAdapter('udp'),
+      const adapter = getAdapter('udp'),
         msg = getLongMessage(10000),
         sandbox = sinon.sandbox.create();
 
@@ -594,12 +607,12 @@ module.exports = {
     },
 
     'Socket exception': function (done) {
-      var gelf = _.cloneDeep(gelfOriginal),
+      const gelf = _.cloneDeep(gelfOriginal),
         msgError = 'example',
         dgramSocket = require('dgram').createSocket('udp4'),
         mock = sinon.mock(dgramSocket).expects('close').once();
 
-      var stub = sinon.stub(dgramSocket, 'send').callsFake(function (msg, offset, length, port, address, cb) {
+      const stub = sinon.stub(dgramSocket, 'send').callsFake(function (msg, offset, length, port, address, cb) {
         msg.should.be.an.instanceof(Buffer);
         offset.should.equal(0);
         length.should.equal(24);
@@ -633,7 +646,7 @@ module.exports = {
     },
 
     'Abstract functionality': function (done) {
-      var adapter = getAdapter('tcp');
+      const adapter = getAdapter('tcp');
       adapter.setOptions({host: 'localhost', port: 5555, timeout: 1000});
       adapter.send('hello', function (err, result) {
         err.should.be.an.instanceof(Error);
@@ -643,7 +656,7 @@ module.exports = {
     },
 
     'Valid message': function (done) {
-      var self = this,
+      const self = this,
         options = {timeout: 123};
 
       this.eventEmitter.end.withArgs(Buffer.from([0x68, 0x65, 0x6c, 0x6c, 0x6f, 0x00])).callsArg(1);
@@ -661,7 +674,7 @@ module.exports = {
     },
 
     'Send multiple messages in bulk': function (done) {
-      var expected = Buffer.from([
+      const expected = Buffer.from([
         0x68, 0x65, 0x6c, 0x6c, 0x6f, 0x00,
         0x77, 0x6f, 0x72, 0x6c, 0x64, 0x00,
         0x00
@@ -676,8 +689,8 @@ module.exports = {
     },
 
     'Avoid sending an empty array in TCP': function (done) {
-      var isAsync = false,
-        self = this;
+      const self = this;
+      var isAsync = false;
       this.adapter.send([], function (err, result) {
         isAsync.should.be.true();
         should.not.exists(err);
@@ -701,7 +714,7 @@ module.exports = {
     'Connection timeout': function (done) {
       this.eventEmitter.setTimeout.yieldsAsync();
 
-      var self = this;
+      const self = this;
       this.adapter.setOptions({timeout: 1000});
       this.adapter.send('hello', function (err, results) {
         should.not.exists(results);
@@ -713,7 +726,7 @@ module.exports = {
     },
 
     'Connection error': function (done) {
-      var self = this;
+      const self = this;
       this.adapter.send('hello', function (err, results) {
         should.not.exists(results);
         self.eventEmitter.emit('error', new Error('err2'));
@@ -730,7 +743,7 @@ module.exports = {
 
   'Adapter TCP(TLS)': {
     'Abstract functionality': function () {
-      var tls = require('tls'),
+      const tls = require('tls'),
         adapter = getAdapter('tcp-tls');
       adapter._instance({host: 'google.com', port: 5555}).should.be.instanceOf(tls.TLSSocket);
     }
